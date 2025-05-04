@@ -1,0 +1,5 @@
+# Just a sample docker-compose file
+# TO DO
+services:
+  web:
+    image: myusername/app:latest
