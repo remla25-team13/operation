@@ -5,8 +5,8 @@ Created PR: x
 Approved PR: x
 
 -- Gopal: --
-Created PR: x
-Approved PR: x
+Created PR: https://github.com/remla25-team13/model-training/pull/1
+Approved PR: https://github.com/remla25-team13/model-service/pull/1
 
 -- Petar Petrov: --
 Created PR: https://github.com/remla25-team13/model-service/pull/1
