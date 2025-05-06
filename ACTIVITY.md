@@ -10,7 +10,7 @@ Approved PR: https://github.com/remla25-team13/model-service/pull/1
 
 -- Petar Petrov: --
 Created PR: https://github.com/remla25-team13/model-service/pull/1
-Approved PR: https://github.com/remla25-team13/operation/pull/2
+Approved PR: https://github.com/remla25-team13/lib-ml/pull/1
 
 -- Tijmen Meijer: --
 Created PR: https://github.com/remla25-team13/lib-ml/pull/1 and https://github.com/remla25-team13/lib-version/pull/1
