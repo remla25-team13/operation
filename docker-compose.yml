@@ -1,5 +1,24 @@
-# Just a sample docker-compose file
-# TO DO
+
+
 services:
-  web:
-    image: myusername/app:latest
+  frontend:
+    image: ghcr.io/remla25-team13/app-frontend:latest
+    ports:
+      - "8080:8080"
+    networks:
+      - app-net
+  backend:
+    image: ghcr.io/remla25-team13/app-service:latest
+    networks:
+      - app-net
+      - app-api
+  model-service:
+    image: ghcr.io/remla25-team13/model-service:latest
+    networks:
+      - app-api
+
+networks:
+  app-net:
+    driver: bridge
+  app-api:
+    driver: bridge
