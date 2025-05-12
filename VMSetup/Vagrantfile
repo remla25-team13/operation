@@ -12,12 +12,15 @@ Vagrant.configure("2") do |config|
     ctrl.vm.network "private_network", ip: "192.168.56.100"
     ctrl.vm.provider "virtualbox" do |v|
       v.memory = 4096
-      v.cpus = 1
+      v.cpus = 2
     end
     ctrl.vm.provision :ansible do |acore|
       acore.compatibility_mode = "2.0"
       acore.playbook = "general.yml"
-      #acore.playbook = "core.yml"
+    end
+    ctrl.vm.provision :ansible do |acore|
+      acore.compatibility_mode = "2.0"
+      acore.playbook = "core.yml"
     end
   end
 
@@ -28,7 +31,7 @@ Vagrant.configure("2") do |config|
       n1.vm.network "private_network", ip: "192.168.56.10#{i}"
       n1.vm.provider "virtualbox" do |v|
         v.memory = 4096
-        v.cpus = 2
+        v.cpus = 1
       end
       n1.vm.provision :ansible do |anode|
         anode.compatibility_mode = "2.0"
