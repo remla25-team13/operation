@@ -5,7 +5,7 @@ This repository contains code for composing our services together, alongside add
 Instructions on how to use `lib-ml`, `lib-version`, `app-service`, `app-frontend`, and `model-service` can be found in their respective repositories. Additionally, the trained models can be found as a GitHub artifact in `model-training`.
 
 ### Running with Docker
-To run everything standalone, simply execute the following command:
+To run the latest image releases, simply execute the following command:
 
 ```bash
 docker compose up --build
