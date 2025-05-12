@@ -15,3 +15,21 @@ Approved PR: https://github.com/remla25-team13/app-service/pull/1
 -- Evan Handgraaf: --
 Created PR: https://github.com/remla25-team13/app-service/pull/1
 Approved PR: https://github.com/remla25-team13/model-training/pull/1
+
+# A2:
+
+-- Gopal: --
+Created PR: x
+Approved PR: x
+
+-- Petar Petrov: --
+Created PR: x
+Approved PR: x
+
+-- Tijmen Meijer: --
+Created PR: x
+Approved PR: x
+
+-- Evan Handgraaf: --
+Created PR: x
+Approved PR: x
