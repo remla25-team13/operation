@@ -31,5 +31,5 @@ Created PR: x
 Approved PR: x
 
 -- Evan Handgraaf: --
-Created PR: x
-Approved PR: x
+Created PR: https://github.com/remla25-team13/app-service/pull/2
+Approved PR: https://github.com/remla25-team13/operation/pull/7
