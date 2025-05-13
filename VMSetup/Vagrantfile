@@ -36,7 +36,10 @@ Vagrant.configure("2") do |config|
       n1.vm.provision :ansible do |anode|
         anode.compatibility_mode = "2.0"
         anode.playbook = "general.yml"
-        #anode.playbook = "node.yml"
+      end
+      n1.vm.provision :ansible do |anode|
+        anode.compatibility_mode = "2.0"
+        anode.playbook = "node.yml"
       end
     end
   end

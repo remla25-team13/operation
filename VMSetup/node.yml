@@ -1,0 +1,13 @@
+- hosts: all
+  become: true
+  tasks:
+    - name: Generate join command
+      ansible.builtin.shell:
+        cmd: kubeamd token create --print-join-command
+        delegate_to: "master" 
+        register: kube_join
+
+    - name: Join cluster
+      ansible.builtin.shell:
+        cmd: {{ kube_join.stdout }}
+

@@ -2,15 +2,16 @@
   hosts: all
   become: yes # makes root
   tasks:  
-  - name: Set up multiple authorized keys
+
+  - name: (step 4) Set up multiple authorized keys #setup ssh on vagrant machines
     ansible.posix.authorized_key:
       user: vagrant
       state: present
       key: '{{ item }}'
-    with_file:
+    with_file: #add an ssh public key here
     - ./public_keys/gopal_id_ed25519.pub
 
-  - name: turn off swap
+  - name: (step 5) turn off swap 
     ansible.builtin.shell:
       cmd: swapoff -a
 
@@ -20,7 +21,7 @@
       regexp: '.*/swap.*'
       state: absent
 
-  - name: create k8conf
+  - name: (step 6) create k8conf
     ansible.builtin.copy:
       content: ""
       dest: /etc/modules-load.d/k8s.conf
@@ -43,7 +44,7 @@
       state: present
 
     # Set ip forwarding on in /proc and in the sysctl file and reload if necessary
-  - name: set ip forwarding
+  - name: (step 7) set ip forwarding
     ansible.posix.sysctl:
       name: net.ipv4.ip_forward
       value: '1'
@@ -67,7 +68,7 @@
       state: present
       reload: true
 
-  - name: set host IPs
+  - name: (step 8) set host IPs #could be done dynamically for extra points
     ansible.builtin.copy:
       src: hosts
       dest: /etc/hosts
