@@ -1,42 +1,68 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# All Vagrant configuration is done below. The "2" in Vagrant.configure
-# configures the configuration version (we support older styles for
-# backwards compatibility). Please don't change it unless you know what
-# you're doing.
+#Variables
+NODES = 2
+CORE_CPUS = 2
+CORE_MEM = 2048
+WORKER_CPUS = 1
+WORKER_MEM = 1024
+
+#Vagrant configuration 
 Vagrant.configure("2") do |config|
+
+  #Configure control node
   config.vm.define "ctrl" do |ctrl|
+    #Provide bento image
     ctrl.vm.box = "bento/ubuntu-24.04"
+
+    #Set network settings
     ctrl.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
     ctrl.vm.network "private_network", ip: "192.168.56.100"
+    ctrl.vm.network "public_network"
+    #Set virtualbox settings
     ctrl.vm.provider "virtualbox" do |v|
-      v.memory = 4096
-      v.cpus = 2
+      v.memory = CORE_MEM
+      v.cpus = CORE_CPUS
     end
+
+    #Run general ansible
     ctrl.vm.provision :ansible do |acore|
       acore.compatibility_mode = "2.0"
       acore.playbook = "general.yml"
     end
+
+    #Run core ansible
     ctrl.vm.provision :ansible do |acore|
       acore.compatibility_mode = "2.0"
       acore.playbook = "core.yml"
     end
   end
-
-  (1..2).each do |i|
+  
+  #Configure NODES amount of workers
+  (1..NODES).each do |i|
+    #create node i
     config.vm.define "node_#{i}" do |n1|
+      #Bento
       n1.vm.box = "bento/ubuntu-24.04"
+
+      #Network
       n1.vm.network "forwarded_port", guest: "8#{i}", host: "808#{i}" , host_ip: "127.0.0.1"
       n1.vm.network "private_network", ip: "192.168.56.10#{i}"
+      
+      #Set virtualbox settings
       n1.vm.provider "virtualbox" do |v|
-        v.memory = 4096
-        v.cpus = 1
+        v.memory = WORKER_MEM
+        v.cpus = WORKER_CPUS
       end
+
+      #Run general ansible
       n1.vm.provision :ansible do |anode|
         anode.compatibility_mode = "2.0"
         anode.playbook = "general.yml"
       end
+
+      #Run node ansible
       n1.vm.provision :ansible do |anode|
         anode.compatibility_mode = "2.0"
         anode.playbook = "node.yml"
