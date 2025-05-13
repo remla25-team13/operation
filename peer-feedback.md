@@ -5,7 +5,7 @@ model-training: https://github.com/remla25-team13/model-training/releases/tag/v1
 - model https://github.com/remla25-team13/model-training/releases/download/v1.0.0/sentiment_model.pk1
 - vectorizer https://github.com/remla25-team13/model-training/releases/download/v1.0.0/bow_vectorizer.pkl
 
-model-service: https://github.com/remla25-team13/model-service
+model-service: https://github.com/remla25-team13/model-service/releases/tag/v1.0.0
 
 lib-ml: https://github.com/remla25-team13/lib-ml/releases/tag/v1.0.0 works as a package and is used by model-service and model-training as can be seen in their requirements.txt
 
