@@ -3,6 +3,6 @@
 127.0.0.1   localhost
 
 ::1     ip6-localhost ip6-loopback
-192.168.56.100   master
-192.168.56.101   worker1
-192.168.56.102   worker2
+192.168.56.100   core
+192.168.56.101   node1
+192.168.56.102   node2

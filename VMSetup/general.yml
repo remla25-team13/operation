@@ -2,48 +2,48 @@
   hosts: all
   become: yes # makes root
   tasks:  
-  - name: Set up multiple authorized keys
+  - name: (step 4) Set up multiple authorized keys #setup ssh on vagrant machines
     ansible.posix.authorized_key:
       user: vagrant
       state: present
       key: '{{ item }}'
-    with_file:
+    with_file: #add an ssh public key here
     - ./public_keys/gopal_id_ed25519.pub
 
-  - name: turn off swap
+  - name: (step 5 1/2) turn off swap 
     ansible.builtin.shell:
       cmd: swapoff -a
 
-  - name: comment out swap line
+  - name: (step 5 2/2) comment out swap line
     ansible.builtin.lineinfile:
       path: /etc/fstab
       regexp: '.*/swap.*'
       state: absent
 
-  - name: create k8conf
+  - name: (step 6 1/4) create k8conf
     ansible.builtin.copy:
       content: ""
       dest: /etc/modules-load.d/k8s.conf
       
-  - name: configure modules
+  - name: (step 6 2/4) configure modules
     ansible.builtin.blockinfile:
       path: /etc/modules-load.d/k8s.conf
       block: |
         overlay
         br_netfilter
 
-  - name: Load br_netfilter
+  - name: (step 6 3/4) Load br_netfilter
     ansible.builtin.modprobe:
       name: br_netfilter
       state: present
 
-  - name: Load overlay
+  - name: (step 6 4/4) Load overlay
     ansible.builtin.modprobe:
       name: overlay
       state: present
 
     # Set ip forwarding on in /proc and in the sysctl file and reload if necessary
-  - name: set ip forwarding
+  - name: (step 7 1/3) set ip forwarding
     ansible.posix.sysctl:
       name: net.ipv4.ip_forward
       value: '1'
@@ -51,7 +51,7 @@
       state: present
       reload: true
 
-  - name: set bridge call ip tables
+  - name: (step 7 2/3) set bridge call ip tables
     ansible.posix.sysctl:
       name: net.bridge.bridge-nf-call-iptables
       value: '1'
@@ -59,7 +59,7 @@
       state: present
       reload: true
 
-  - name: set bridge call ip6 tables
+  - name: (step 7 3/3) set bridge call ip6 tables
     ansible.posix.sysctl:
       name: net.bridge.bridge-nf-call-ip6tables
       value: '1'
@@ -67,7 +67,7 @@
       state: present
       reload: true
 
-  - name: set host IPs
+  - name: (step 8 1/1) set host IPs #could be done dynamically for extra points
     ansible.builtin.copy:
       src: hosts
       dest: /etc/hosts
@@ -75,7 +75,7 @@
       group: root
       mode: '0644'
 
-  - name: add kubernetes key
+  - name: (step 9) add kubernetes key
     ansible.builtin.apt_key:
       url: https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key
       keyring: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
