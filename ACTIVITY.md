@@ -19,8 +19,8 @@ Approved PR: https://github.com/remla25-team13/model-training/pull/1
 # A2:
 
 -- Gopal: --
-Created PR: x
-Approved PR: x
+Created PR: https://github.com/remla25-team13/operation/pull/7 https://github.com/remla25-team13/operation/pull/9 https://github.com/remla25-team13/operation/pull/10 https://github.com/remla25-team13/operation/pull/11
+Approved PR: https://github.com/remla25-team13/model-service/pull/6 https://github.com/remla25-team13/app-service/pull/2 https://github.com/remla25-team13/operation/pull/8
 
 -- Petar Petrov: --
 Created PR: https://github.com/remla25-team13/app-frontend/pull/5
