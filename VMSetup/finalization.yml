@@ -1,8 +1,0 @@
-- name: finalization
-  hosts: all
-  tasks: 
-    - name: Download MetalLB
-      ansible.builtin.get_url:
-        url: https://raw.githubusercontent.com/metallb/metallb/tree/v0.14.9/config/manifests/metallb-native.yml
-        dest: /home/vagrant/metallb-native.yml
-
