@@ -8,7 +8,7 @@ services:
   app-service:
     image: ghcr.io/remla25-team13/app-service:latest
     environment:
-      - MODEL_SERVICE_URL=http://model-service:8081
+      - MODEL_SERVICE_URL=http://model-service:${MODEL_SERVICE_PORT}
     container_name: app-service
 
   model-service:
@@ -16,4 +16,7 @@ services:
     environment:
       - VERSION=v0.1.0
       - MODE=PROD
+      - PORT=${MODEL_SERVICE_PORT}
+    ports:
+    - "${MODEL_SERVICE_PORT}:${MODEL_SERVICE_PORT}"
     container_name: model-service

@@ -23,8 +23,8 @@ Created PR: x
 Approved PR: x
 
 -- Petar Petrov: --
-Created PR: x
-Approved PR: x
+Created PR: https://github.com/remla25-team13/app-frontend/pull/5
+Approved PR: https://github.com/remla25-team13/lib-version/pull/3
 
 -- Tijmen Meijer: --
 Created PR: x
