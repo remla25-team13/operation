@@ -112,7 +112,7 @@
       path: "/etc/containerd/config.toml" 
       state: present
       regexp: "    disable_apparmor = true"
-      line: "    disble_apparmor = false"
+      line: "    disable_apparmor = false"
 
   - name: Validate the sudoers file before saving
     ansible.builtin.lineinfile:
