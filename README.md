@@ -29,3 +29,5 @@ You can find our Activity feedback at https://github.com/remla25-team13/operatio
 
 ## Progress log
 **Deadline 06/05/2025** We worked on getting the individual repositories set-up correctly but currently do not have the full app working. The individual components work we we have yet to integrate everything.
+
+**Deadline 13/05/2025** We worked on getting assignment 1 to an excellent state and made an effort to get as far as possible with assignment 2, we are currently at step 20
