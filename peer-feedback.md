@@ -16,5 +16,11 @@ app-frontend: angular app WIP.
 app-service: angular app WIP.
 
 ## Comments for A1:
-We worked on getting the individual repositories set-up correctly but currently do not have the full app working.
-The individual components work we we have yet to integrate everything.
+Assignment 1 is fully completed
+
+## Comments for A2:
+Assignment 2 steps 1-19 are implemented,
+This can be confirmed by following these steps:
+1. clone our operations repository ```git clone https://github.com/remla25-team13/operation.git```
+2. cd into the VMSetup folder ```cd ./operation/VMSetup```
+3. run the vagrant script ```vagrant up```
