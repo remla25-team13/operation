@@ -1,22 +1,22 @@
 services:
-  frontend:
+  app-frontend:
     image: ghcr.io/remla25-team13/app-frontend:latest
-    ports:
-      - "8080:8080"
-    networks:
-      - app-net
-  backend:
+    ports: 
+      - 4200:4200
+    container_name: app-frontend
+
+  app-service:
     image: ghcr.io/remla25-team13/app-service:latest
-    networks:
-      - app-net
-      - app-api
+    environment:
+      - MODEL_SERVICE_URL=http://model-service:${MODEL_SERVICE_PORT}
+    container_name: app-service
+
   model-service:
     image: ghcr.io/remla25-team13/model-service:latest
-    networks:
-      - app-api
-
-networks:
-  app-net:
-    driver: bridge
-  app-api:
-    driver: bridge
+    environment:
+      - VERSION=v0.1.0
+      - MODE=PROD
+      - PORT=${MODEL_SERVICE_PORT}
+    ports:
+    - "${MODEL_SERVICE_PORT}:${MODEL_SERVICE_PORT}"
+    container_name: model-service
