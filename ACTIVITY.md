@@ -27,8 +27,8 @@ Created PR: https://github.com/remla25-team13/app-frontend/pull/5
 Approved PR: https://github.com/remla25-team13/lib-version/pull/3
 
 -- Tijmen Meijer: --
-Created PR: x
-Approved PR: x
+Created PR: https://github.com/remla25-team13/model-training/pull/3
+Approved PR: https://github.com/remla25-team13/app-frontend/pull/4
 
 -- Evan Handgraaf: --
 Created PR: https://github.com/remla25-team13/app-service/pull/2
