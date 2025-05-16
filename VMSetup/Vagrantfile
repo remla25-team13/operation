@@ -8,17 +8,41 @@ CORE_MEM = 2048
 WORKER_CPUS = 1
 WORKER_MEM = 1024
 
+def get_node_ip(node)
+  return "192.168.56.#{100 + node}"
+end
+
+def provision_ansible_general(defined_node)
+  defined_node.vm.provision :ansible do |ansible|
+    ansible.compatibility_mode = '2.0'
+    ansible.playbook = 'general.yml'
+    ansible.extra_vars = {
+      nodes: [
+        { hostname: 'ctrl', ip: get_node_ip(0) },
+        *(1..NODES).map { |i| { hostname: "node-#{i}", ip: get_node_ip(i) } }
+      ]
+    }
+  end
+end
+
+ansible_groups = {
+  :control => ['ctrl'],
+  :workers => (1..NODES).map { |i| "node-#{i}" }
+}
+
 #Vagrant configuration 
 Vagrant.configure("2") do |config|
 
   #Configure control node
   config.vm.define "ctrl" do |ctrl|
+    ctrl.vm.hostname = "ctrl"
+
     #Provide bento image
     ctrl.vm.box = "bento/ubuntu-24.04"
 
     #Set network settings
     ctrl.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
-    ctrl.vm.network "private_network", ip: "192.168.56.100"
+    ctrl.vm.network "private_network", ip: get_node_ip(0)
     ctrl.vm.network "forwarded_port", guest: 22, host: 22
     #Set virtualbox settings
     ctrl.vm.provider "virtualbox" do |v|
@@ -27,45 +51,43 @@ Vagrant.configure("2") do |config|
     end
 
     #Run general ansible
-    ctrl.vm.provision :ansible do |acore|
-      acore.compatibility_mode = "2.0"
-      acore.playbook = "general.yml"
-    end
+    provision_ansible_general(ctrl)
 
-    #Run core ansible
+    #Run ansible for control node
     ctrl.vm.provision :ansible do |acore|
       acore.compatibility_mode = "2.0"
-      acore.playbook = "core.yml"
+      acore.playbook = "ctrl.yml"
+      acore.groups = ansible_groups
     end
   end
   
   #Configure NODES amount of workers
   (1..NODES).each do |i|
     #create node i
-    config.vm.define "node_#{i}" do |n1|
+    config.vm.define "node-#{i}" do |node|
+      node.vm.hostname = "node-#{i}"
+
       #Bento
-      n1.vm.box = "bento/ubuntu-24.04"
+      node.vm.box = "bento/ubuntu-24.04"
 
       #Network
-      n1.vm.network "forwarded_port", guest: "8#{i}", host: "808#{i}" , host_ip: "127.0.0.1"
-      n1.vm.network "private_network", ip: "192.168.56.10#{i}"
-      
+      node.vm.network "forwarded_port", guest: "8#{i}", host: "808#{i}" , host_ip: "127.0.0.1"
+      node.vm.network "private_network", ip: get_node_ip(i)
+
       #Set virtualbox settings
-      n1.vm.provider "virtualbox" do |v|
+      node.vm.provider "virtualbox" do |v|
         v.memory = WORKER_MEM
         v.cpus = WORKER_CPUS
       end
 
       #Run general ansible
-      n1.vm.provision :ansible do |anode|
-        anode.compatibility_mode = "2.0"
-        anode.playbook = "general.yml"
-      end
+      provision_ansible_general(node)
 
       #Run node ansible
-      n1.vm.provision :ansible do |anode|
+      node.vm.provision :ansible do |anode|
         anode.compatibility_mode = "2.0"
         anode.playbook = "node.yml"
+        anode.groups = ansible_groups
       end
     end
   end
