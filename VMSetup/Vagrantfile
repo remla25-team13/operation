@@ -53,10 +53,10 @@ Vagrant.configure("2") do |config|
     #Run general ansible
     provision_ansible_general(ctrl)
 
-    #Run core ansible
+    #Run ansible for control node
     ctrl.vm.provision :ansible do |acore|
       acore.compatibility_mode = "2.0"
-      acore.playbook = "core.yml"
+      acore.playbook = "ctrl.yml"
       acore.groups = ansible_groups
     end
   end
