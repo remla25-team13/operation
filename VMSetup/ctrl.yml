@@ -1,0 +1,100 @@
+- hosts: control
+  become: true
+  tasks:
+    - name: Install kubernetes python package # Make sure to install the kubernetes python package, ansible actions depend on it
+      apt:
+        name: python3-kubernetes
+        state: present
+
+    - name: Check if kubeadm config already exists
+      stat:
+        path: /etc/kubernetes/admin.conf
+      register: kubeadm_config
+
+    - name: Init cluster
+      ansible.builtin.shell:
+        cmd: kubeadm init --apiserver-advertise-address=192.168.56.100 --node-name ctrl --pod-network-cidr=10.244.0.0/16
+      when: not kubeadm_config.stat.exists
+      register: kubeadm_init_output
+
+    - name: Create directory for vagrant user
+      ansible.builtin.file:
+        path: /home/vagrant/.kube
+        state: directory
+        owner: vagrant
+        group: vagrant
+        mode: '0755'
+      when: not kubeadm_config.stat.exists
+
+    - name: Copy admin.conf
+      ansible.builtin.copy:
+        src: /etc/kubernetes/admin.conf
+        dest: /home/vagrant/.kube/config
+        remote_src: yes
+        owner: vagrant
+        group: vagrant
+        mode: '0644'
+      when: not kubeadm_config.stat.exists
+
+    - name: Copy kubeconfig to Ansible control machine
+      fetch:
+        src: /etc/kubernetes/admin.conf
+        dest: ./kubeconfig/admin-{{ inventory_hostname }}.conf  # Saves with unique name
+        flat: yes
+      when: not kubeadm_config.stat.exists
+
+    - name: Check if Flannel DaemonSet already exists
+      kubernetes.core.k8s:
+        api_version: apps/v1
+        kind: DaemonSet
+        namespace: kube-flannel
+        name: kube-flannel-ds
+        kubeconfig: /home/vagrant/.kube/config
+      register: flannel_ds
+      ignore_errors: yes
+
+    - name: Download Flannel
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/flannel-io/flannel/v0.26.7/Documentation/kube-flannel.yml
+        dest: /home/vagrant/kube-flannel.yml
+      when: (flannel_ds is failed) or (flannel_ds.resources | default([]) | length == 0)
+
+    - name: Patch Flannel
+      ansible.builtin.replace:
+        path: /home/vagrant/kube-flannel.yml
+        regexp: '(\s*)- --ip-masq'
+        replace: '\1- --iface=eth1\n\1- --ip-masq'
+      when: (flannel_ds is failed) or (flannel_ds.resources | default([]) | length == 0)
+
+    - name: Apply Flannel 
+      ansible.builtin.shell:
+        cmd: kubectl apply -f /home/vagrant/kube-flannel.yml --kubeconfig=/home/vagrant/.kube/config
+      when: (flannel_ds is failed) or (flannel_ds.resources | default([]) | length == 0)
+        
+    - name: add helm key
+      ansible.builtin.apt_key:
+        url: https://baltocdn.com/helm/signing.asc
+        keyring: /etc/apt/keyrings/helm.gpg
+        state: present
+
+    - name: Kubernetes to list
+      ansible.builtin.apt_repository:
+        repo: deb [signed-by=/etc/apt/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main
+        state: present
+        update_cache: true
+
+    - name: Install a list of packages
+      ansible.builtin.apt:
+        state: present
+        pkg:
+        - helm
+
+    - name: Check if helm-diff plugin is already installed
+      command: helm plugin list
+      register: helm_plugins
+      failed_when: helm_plugins.rc > 1
+      changed_when: "'diff\t' not in helm_plugins.stdout"
+
+    - name: Install helm-diff plugin
+      command: helm plugin install https://github.com/databus23/helm-diff
+      when: "'diff\t' not in helm_plugins.stdout"
