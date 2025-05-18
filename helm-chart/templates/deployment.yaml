@@ -1,0 +1,70 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-frontend
+  template:
+    metadata:
+      labels:
+        app: app-frontend
+    spec:
+      containers:
+      - name: app-frontend
+        image: {{ .Values.appFrontend.image }}
+        ports:
+        - containerPort: {{ .Values.appFrontend.port }}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-service
+  template:
+    metadata:
+      labels:
+        app: app-service
+    spec:
+      containers:
+      - name: app-service
+        image: {{ .Values.appService.image }}
+        env:
+        - name: MODEL_SERVICE_URL
+          value: {{ .Values.appService.modelServiceUrl }}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: model-service
+  template:
+    metadata:
+      labels:
+        app: model-service
+    spec:
+      containers:
+      - name: model-service
+        image: {{ .Values.modelService.image }}
+        env:
+        - name: VERSION
+          value: "{{ .Values.modelService.version }}"
+        - name: MODE
+          value: "{{ .Values.modelService.mode }}"
+        - name: PORT
+          value: "{{ .Values.modelService.port }}"
+        ports:
+        - containerPort: {{ .Values.modelService.port }}

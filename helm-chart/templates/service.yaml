@@ -1,0 +1,41 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-frontend
+spec:
+  selector:
+    app: app-frontend
+  ports:
+    - protocol: TCP
+      port: {{ .Values.appFrontend.port }}
+      targetPort: {{ .Values.appFrontend.port }}
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-service
+spec:
+  selector:
+    app: app-service
+  ports:
+    - protocol: TCP
+      port: {{ .Values.appService.servicePort }}
+      targetPort: {{ .Values.appService.containerPort }}
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: model-service
+spec:
+  selector:
+    app: model-service
+  ports:
+    - protocol: TCP
+      port: {{ .Values.modelService.port }}
+      targetPort: {{ .Values.modelService.port }}
+  type: ClusterIP
