@@ -17,8 +17,13 @@ For development: but make sure you have all the repo's in one folder.
 docker compose -f docker-compose.dev.yml up --build
 ```
 
+## HELM
+running helm can be done by having a kubernetes cluster active and inputting the following command
+helm install ./helm-chart --generate-name
+
 ## Pointers to relevant files that help outsiders understand the code base.
 You can find our Activity feedback at https://github.com/remla25-team13/operation/blob/main/ACTIVITY.md
+
 
 ## A list of all relevant repositories for the project.
 - lib-ml - https://github.com/remla25-team13/lib-ml
