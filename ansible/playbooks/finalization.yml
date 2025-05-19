@@ -1,0 +1,97 @@
+- name: Finalizing the Cluster Setup
+  hosts: all
+  become: yes
+  tasks:
+    # Step 20: Install MetalLB
+    - name: Download MetalLB yaml file
+      get_url:
+        url: https://raw.githubusercontent.com/metallb/metallb/v0.14.9/config/manifests/metallb-native.yaml
+        dest: "/tmp/metallb-native.yaml"
+
+    - name: Apply metallb-native.yaml
+      kubernetes.core.k8s:
+        state: present
+        src: "/tmp/metallb-native.yaml"
+
+    - name: Create MetalLB IPAddressPool manifest
+      copy:
+        dest: /tmp/metallb-ipaddresspool.yaml
+        content: |
+          apiVersion: metallb.io/v1beta1
+          kind: IPAddressPool
+          metadata:
+            name: default-pool
+            namespace: metallb-system
+          spec:
+            addresses:
+              - 192.168.56.90-192.168.56.99
+
+    - name: Apply metallb-pool.yaml
+      kubernetes.core.k8s:
+        state: present
+        src: "/tmp/metallb-pool.yaml"
+
+    - name: Create MetalLB L2Advertisement manifest
+      copy:
+        dest: /tmp/metallb-l2advertisement.yaml
+        content: |
+          apiVersion: metallb.io/v1beta1
+          kind: L2Advertisement
+          metadata:
+            name: l2-advertisement
+            namespace: metallb-system
+
+    - name: Apply metallb-pool.yaml
+      kubernetes.core.k8s:
+        state: present
+        src: "/tmp/metallb-l2advertisement.yaml"
+
+    # Step 21: Install NGINX Ingress Controller
+    - name: Add ingress-nginx Helm repository
+      community.kubernetes.helm_repository:
+        name: ingress-nginx
+        repo_url: https://kubernetes.github.io/ingress-nginx
+
+    - name: Install ingress-nginx Helm chart
+      community.kubernetes.helm:
+        name: ingress-nginx
+        chart_ref: ingress-nginx/ingress-nginx
+        release_namespace: ingress-nginx
+        create_namespace: true
+        values:
+          controller:
+            service:
+              loadBalancerIP: "192.168.56.90"
+
+    # Step 22: Install Kubernetes Dashboard
+    - name: Add kubernetes-dashboard Helm repository
+      community.kubernetes.helm_repository:
+        name: kubernetes-dashboard
+        repo_url: https://kubernetes.github.io/dashboard/
+
+    - name: Install kubernetes-dashboard Helm chart
+      community.kubernetes.helm:
+        name: kubernetes-dashboard
+        chart_ref: kubernetes-dashboard/kubernetes-dashboard
+        release_namespace: kubernetes-dashboard
+        create_namespace: true
+
+    - name: Copy dashboard-admin-user.yaml to VM
+      copy:
+        src: files/dashboard-admin-user.yaml
+        dest: /tmp/dashboard-admin-user.yaml
+
+    - name: Create admin user
+      kubernetes.core.k8s:
+        state: present
+        src: "/tmp/dashboard-admin-user.yaml"
+
+    - name: Copy dashboard-ingress.yaml to VM
+      copy:
+        src: files/dashboard-ingress.yaml
+        dest: /tmp/dashboard-ingress.yaml
+
+    - name: Apply dashboard-ingress.yaml
+      kubernetes.core.k8s:
+        state: present
+        src: "/tmp/dashboard-ingress.yaml
