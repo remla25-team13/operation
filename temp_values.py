@@ -10,7 +10,7 @@ def process_review():
 
 if __name__ == '__main__':
     # Start the Prometheus metrics server on port 8000
-    start_http_server(9090)
+    start_http_server(8000)
     while True:
         process_review()
         time.sleep(1)

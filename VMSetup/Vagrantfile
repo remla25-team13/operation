@@ -4,9 +4,9 @@
 #Variables
 NODES = 1
 CORE_CPUS = 2
-CORE_MEM = 2048
+CORE_MEM = 4096
 WORKER_CPUS = 1
-WORKER_MEM = 1024
+WORKER_MEM = 2048
 
 def get_node_ip(node)
   return "192.168.56.#{100 + node}"
