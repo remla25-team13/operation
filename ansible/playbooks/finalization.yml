@@ -1,0 +1,9 @@
+- name: Finalizing the Cluster Setup
+  hosts: all
+  become: yes
+  tasks:
+    # Step 20: Install MetalLB
+    - name: Download MetalLB yaml file
+      get_url:
+        url: https://raw.githubusercontent.com/metallb/metallb/v0.14.9/config/manifests/metallb-native.yaml
+        dest: "/tmp/metallb-native.yaml"
