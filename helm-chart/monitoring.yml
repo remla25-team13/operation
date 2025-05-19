@@ -1,0 +1,29 @@
+# Add a port name to your service definition (if not already named)
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-service
+spec:
+  selector:
+    app: app-service
+  ports:
+    - name: metrics  # Added name to match ServiceMonitor
+      protocol: TCP
+      port: {{ .Values.appService.servicePort }}
+      targetPort: {{ .Values.appService.containerPort }}
+  type: ClusterIP
+---
+# ServiceMonitor to scrape app-service metrics
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: app-service-monitor
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: app-service
+  endpoints:
+    - port: metrics
+      interval: 15s
