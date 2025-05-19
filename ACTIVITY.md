@@ -6,7 +6,7 @@ Approved PR: https://github.com/remla25-team13/model-service/pull/1
 
 -- Petar Petrov: --
 Created PR: https://github.com/remla25-team13/model-service/pull/1 (related to A1)
-Approved PR: https://github.com/remla25-team13/lib-ml/pull/1 (related to A1)
+Approved PR: https://github.com/remla25-team13/lib-ml/pull/1
 
 -- Tijmen Meijer: --
 Created PR: https://github.com/remla25-team13/lib-ml/pull/1 (related to A1)
@@ -24,7 +24,7 @@ Approved PR: https://github.com/remla25-team13/model-service/pull/6
 
 -- Petar Petrov: --
 Created PR: https://github.com/remla25-team13/app-frontend/pull/5 (related to A1)
-Approved PR: https://github.com/remla25-team13/lib-version/pull/3 (related to A1)
+Approved PR: https://github.com/remla25-team13/lib-version/pull/3
 
 -- Tijmen Meijer: --
 Created PR: https://github.com/remla25-team13/model-training/pull/3 (related to A1)
