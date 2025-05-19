@@ -1,0 +1,15 @@
+appFrontend:
+  image: ghcr.io/remla25-team13/app-frontend:latest
+  port: 4200
+
+appService:
+  image: ghcr.io/remla25-team13/app-service:latest
+  modelServiceUrl: "http://model-service:5000" # Default port
+  servicePort: 80
+  contrainerport: 8080
+
+modelService:
+  image: ghcr.io/remla25-team13/model-service:latest
+  port: 5000
+  version: v0.1.0
+  mode: PROD
