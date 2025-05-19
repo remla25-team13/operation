@@ -33,3 +33,25 @@ Approved PR: https://github.com/remla25-team13/app-frontend/pull/4
 -- Evan Handgraaf: --
 Created PR: https://github.com/remla25-team13/app-service/pull/2
 Approved PR: https://github.com/remla25-team13/operation/pull/7
+
+# A3:
+
+-- Gopal: --
+Created PR: https://github.com/remla25-team13/operation/pull/15 (assignment 3)
+Approved PR: https://github.com/remla25-team13/operation/pull/13
+
+-- Petar Petrov: --
+Created PR:
+Approved PR:
+
+-- Tijmen Meijer: --
+Created PR:
+Approved PR:
+
+-- Evan Handgraaf: --
+Created PR:
+Approved PR:
+
+-- Rok Stular --
+Created PR:
+Approved PR:
