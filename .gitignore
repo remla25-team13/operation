@@ -1,2 +1,2 @@
-/VMSetup/.vagrant/
-/VMSetup/kubeconfig/
+.vagrant
+kubeconfig
