@@ -7,7 +7,7 @@
         user: vagrant
         state: present
         key: "{{ lookup('file', item) }}"
-      loop: "{{ query('fileglob', 'public_keys/*.pub') }}"
+      loop: "{{ query('fileglob', '../public_keys/*.pub') }}"
 
     - name: (step 5 1/2) turn off swap
       ansible.builtin.shell:
