@@ -4,6 +4,8 @@ services:
     ports: 
       - 4200:4200
     container_name: app-frontend
+    depends_on:
+      - app-service
 
   app-service:
     build: ../app-service
@@ -12,6 +14,8 @@ services:
     environment:
       - MODEL_SERVICE_URL=http://model-service:8081
     container_name: app-service
+    secrets:
+      - auth_token
 
   model-service:
     build: 
@@ -22,3 +26,9 @@ services:
     ports:
       - 8081:8081
     container_name: model-service
+    secrets:
+      - auth_token
+
+secrets:
+  auth_token:
+    file: ./auth_token.txt

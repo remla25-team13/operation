@@ -4,12 +4,16 @@ services:
     ports: 
       - 4200:4200
     container_name: app-frontend
+    depends_on:
+      - app-service
 
   app-service:
     image: ghcr.io/remla25-team13/app-service:latest
     environment:
       - MODEL_SERVICE_URL=http://model-service:${MODEL_SERVICE_PORT}
     container_name: app-service
+    secrets:
+      - auth_token
 
   model-service:
     image: ghcr.io/remla25-team13/model-service:latest
@@ -20,3 +24,9 @@ services:
     ports:
     - "${MODEL_SERVICE_PORT}:${MODEL_SERVICE_PORT}"
     container_name: model-service
+    secrets:
+      - auth_token
+
+secrets:
+  auth_token:
+    file: ./auth_token.txt
