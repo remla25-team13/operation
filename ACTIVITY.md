@@ -54,4 +54,4 @@ Approved PR: https://github.com/remla25-team13/app-service/pull/3
 
 -- Rok Stular --
 Created PR: https://github.com/remla25-team13/operation/pull/13 (related to A2)
-Approved PR:
+Approved PR: https://github.com/remla25-team13/operation/pull/15
