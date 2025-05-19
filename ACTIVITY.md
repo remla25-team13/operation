@@ -42,11 +42,11 @@ Approved PR: https://github.com/remla25-team13/operation/pull/13
 
 -- Petar Petrov: --
 Created PR: https://github.com/remla25-team13/app-service/pull/3 (related to A3)
-Approved PR: https://github.com/remla25-team13/model-service/pull/7 (related to A1)
+Approved PR: https://github.com/remla25-team13/model-service/pull/7
 
 -- Tijmen Meijer: --
 Created PR: https://github.com/remla25-team13/operation/pull/16 (related A3)
-Approved PR: https://github.com/remla25-team13/model-service/pull/5 (related A2)
+Approved PR: https://github.com/remla25-team13/model-service/pull/5
 
 -- Evan Handgraaf: --
 Created PR:
