@@ -49,7 +49,7 @@ Created PR: https://github.com/remla25-team13/operation/pull/16 (related A3)
 Approved PR: https://github.com/remla25-team13/model-service/pull/5
 
 -- Evan Handgraaf: --
-Created PR:
+Created PR: https://github.com/remla25-team13/operation/pull/17 (related A2)
 Approved PR: https://github.com/remla25-team13/app-service/pull/3
 
 -- Rok Stular --
