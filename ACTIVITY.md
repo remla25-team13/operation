@@ -50,7 +50,7 @@ Approved PR:
 
 -- Evan Handgraaf: --
 Created PR:
-Approved PR:
+Approved PR: https://github.com/remla25-team13/app-service/pull/3
 
 -- Rok Stular --
 Created PR:
