@@ -19,7 +19,8 @@ docker compose -f docker-compose.dev.yml up --build
 
 ## HELM
 running helm can be done by having a kubernetes cluster active and inputting the following command
-helm install ./helm-chart --generate-name
+helm install ./helm-chart --generate-name OR
+helm install team10-release ./helm-chart
 
 ## Pointers to relevant files that help outsiders understand the code base.
 You can find our Activity feedback at https://github.com/remla25-team13/operation/blob/main/ACTIVITY.md
