@@ -45,8 +45,8 @@ Created PR:
 Approved PR:
 
 -- Tijmen Meijer: --
-Created PR:
-Approved PR:
+Created PR: https://github.com/remla25-team13/operation/pull/16 (related A3)
+Approved PR: https://github.com/remla25-team13/model-service/pull/5 (related A2)
 
 -- Evan Handgraaf: --
 Created PR:
