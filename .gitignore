@@ -1,2 +1,2 @@
-/VMSetup/.vagrant/
-/VMSetup/kubeconfig/
+.vagrant/
+ansible/playbooks/kubeconfig/

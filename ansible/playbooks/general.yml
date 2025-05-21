@@ -7,7 +7,7 @@
         user: vagrant
         state: present
         key: "{{ lookup('file', item) }}"
-      loop: "{{ query('fileglob', 'public_keys/*.pub') }}"
+      loop: "{{ query('fileglob', '../public_keys/*.pub') }}"
 
     - name: (step 5 1/2) turn off swap
       ansible.builtin.shell:
@@ -66,7 +66,7 @@
 
     - name: (step 8 1/1) set host IPs #could be done dynamically for extra points
       template:
-        src: hosts.j2
+        src: ../templates/hosts.j2
         dest: /etc/hosts
         owner: root
         group: root
