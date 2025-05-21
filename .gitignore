@@ -1,2 +1,2 @@
 .vagrant/
-ansible/playbooks/kubeconfig/
+ansible/playbooks/kubeconfig/.DS_Store
