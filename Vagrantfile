@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 #Variables
-NODES = 1
+NODES = 2
 CORE_CPUS = 2
 CORE_MEM = 2048
 WORKER_CPUS = 1
