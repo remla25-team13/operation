@@ -2,11 +2,11 @@
 # vi: set ft=ruby :
 
 #Variables
-NODES = 1
+NODES = 2
 CORE_CPUS = 2
-CORE_MEM = 4096
+CORE_MEM = 2048
 WORKER_CPUS = 1
-WORKER_MEM = 2048
+WORKER_MEM = 1024
 
 def get_node_ip(node)
   return "192.168.56.#{100 + node}"
