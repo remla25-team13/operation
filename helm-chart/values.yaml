@@ -13,10 +13,3 @@ modelService:
   port: 5000
   version: v0.1.0
   mode: PROD
-
-prometheus:
-  prometheusSpec:
-    scrapeConfigs:
-      - job_name: 'review-metrics-exporter'
-        static_configs:
-          - targets: ['metrics-exporter:8000']  # or your-host-ip:8000 if outside K8s
