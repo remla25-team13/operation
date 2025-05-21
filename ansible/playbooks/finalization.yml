@@ -1,6 +1,8 @@
 - name: Finalizing the Cluster Setup
   hosts: all
-  become: yes
+  environment:
+    KUBECONFIG: /home/vagrant/.kube/config
+  become: true
   tasks:
     # Step 20: Install MetalLB
     - name: Download MetalLB yaml file
@@ -29,7 +31,7 @@
     - name: Apply metallb-pool.yaml
       kubernetes.core.k8s:
         state: present
-        src: "/tmp/metallb-pool.yaml"
+        src: "/tmp/metallb-ipaddresspool.yaml"
 
     - name: Create MetalLB L2Advertisement manifest
       copy:
@@ -41,7 +43,7 @@
             name: l2-advertisement
             namespace: metallb-system
 
-    - name: Apply metallb-pool.yaml
+    - name: Apply metallb-l2advertisement.yaml
       kubernetes.core.k8s:
         state: present
         src: "/tmp/metallb-l2advertisement.yaml"
@@ -62,6 +64,7 @@
           controller:
             service:
               loadBalancerIP: "192.168.56.90"
+
 
     # Step 22: Install Kubernetes Dashboard
     - name: Add kubernetes-dashboard Helm repository
@@ -94,4 +97,4 @@
     - name: Apply dashboard-ingress.yaml
       kubernetes.core.k8s:
         state: present
-        src: "/tmp/dashboard-ingress.yaml
+        src: "/tmp/dashboard-ingress.yaml"
