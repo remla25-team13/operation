@@ -37,3 +37,46 @@ You can find our Activity feedback at https://github.com/remla25-team13/operatio
 **Deadline 06/05/2025** We worked on getting the individual repositories set-up correctly but currently do not have the full app working. The individual components work we we have yet to integrate everything.
 
 **Deadline 13/05/2025** We worked on getting assignment 1 to an excellent state and made an effort to get as far as possible with assignment 2, we are currently at step 20
+
+## Grafana
+
+This section explains how you can install **Grafana** and **Prometheus** locally on your Mac  
+and connect them to visualize your application metrics.
+
+### 1. Install Grafana
+
+#### On Mac (using Homebrew)
+```bash
+brew install grafana
+brew services start grafana
+```
+
+- Access Grafana at [http://localhost:3000](http://localhost:3000)
+- Login with:
+  - **Username**: `admin`
+  - **Password**: `admin` (you'll be asked to change it)
+
+### 2. Install Prometheus
+
+#### On Mac (using Homebrew)
+```bash
+brew install prometheus
+brew services start prometheus
+```
+
+- Access Prometheus at [http://localhost:9090](http://localhost:9090)
+
+> 💡 _Make sure Prometheus is correctly configured to scrape metrics from your application._
+
+### 3. Connect Grafana to Prometheus
+
+1. In Grafana, click **⚙️  Configuration > Data Sources**.
+2. Click **Add data source** and choose **Prometheus**.
+3. Set **URL** to `http://localhost:9090`.
+4. Click **Save & Test**.
+
+### 4. Import the Grafana Dashboard
+
+1. In Grafana, click **+ > Import**.
+2. Upload `grafana/dashboards/k8-dashboard.json` from this repository.
+3. Select your Prometheus data source and click **Import**.
