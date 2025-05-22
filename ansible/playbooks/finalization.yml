@@ -121,6 +121,7 @@
         dest: /tmp/istio.tar.gz
 
     - name: Unpack Istio
+      become: true
       unarchive:
         src: /tmp/istio.tar.gz
         dest: /opt
