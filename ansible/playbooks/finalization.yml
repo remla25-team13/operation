@@ -28,6 +28,12 @@
             addresses:
               - 192.168.56.90-192.168.56.99
 
+    - name: Wait for MetalLB webhook service to become reachable
+      shell: |
+        kubectl wait --for=condition=Ready pod -l component=controller -n metallb-system --timeout=60s
+      register: metallb_webhook_wait
+      failed_when: metallb_webhook_wait.rc != 0
+
     - name: Apply metallb-pool.yaml
       kubernetes.core.k8s:
         state: present
@@ -94,7 +100,65 @@
         src: files/dashboard-ingress.yaml
         dest: /tmp/dashboard-ingress.yaml
 
+    - name: Wait for NGINX ingress controller to become ready
+      shell: |
+        kubectl wait --namespace ingress-nginx \
+          --for=condition=Ready pod \
+          --selector=app.kubernetes.io/component=controller \
+          --timeout=90s
+      register: nginx_wait_result
+      failed_when: nginx_wait_result.rc != 0
+
     - name: Apply dashboard-ingress.yaml
       kubernetes.core.k8s:
         state: present
         src: "/tmp/dashboard-ingress.yaml"
+
+    # Step 23: Install Istio
+    - name: Download Istio 1.25.2
+      get_url:
+        url: https://github.com/istio/istio/releases/download/1.25.2/istio-1.25.2-linux-amd64.tar.gz
+        dest: /tmp/istio.tar.gz
+
+    - name: Unpack Istio
+      become: true
+      unarchive:
+        src: /tmp/istio.tar.gz
+        dest: /opt
+        remote_src: yes
+
+    - name: Add istioctl to PATH
+      lineinfile:
+        path: /home/vagrant/.bashrc
+        line: 'export PATH="$PATH:/opt/istio-1.25.2/bin"'
+        insertafter: EOF
+
+    - name: Source .bashrc to make istioctl available immediately
+      shell: source /home/vagrant/.bashrc
+      args:
+        executable: /bin/bash
+
+    - name: Create IstioOperator config file
+      copy:
+        dest: /tmp/istio-operator.yaml
+        content: |
+          apiVersion: install.istio.io/v1alpha1
+          kind: IstioOperator
+          metadata:
+            name: istio-control-plane
+            namespace: istio-system
+          spec:
+            profile: default
+            components:
+              ingressGateways:
+              - name: istio-ingressgateway
+                enabled: true
+                k8s:
+                  service:
+                    loadBalancerIP: 192.168.56.91
+
+    - name: Install Istio with custom configuration
+      shell: |
+        /opt/istio-1.25.2/bin/istioctl install -y -f /tmp/istio-operator.yaml
+      args:
+        executable: /bin/bash
