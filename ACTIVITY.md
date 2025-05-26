@@ -71,8 +71,8 @@ Created PR:
 Approved PR: 
 
 -- Evan Handgraaf: --
-Created PR: 
-Approved PR: 
+Created PR: https://github.com/remla25-team13/model-training/pull/7 (related to A4)
+Approved PR: https://github.com/remla25-team13/model-training/pull/5
 
 -- Rok Stular --
 Created PR: 
