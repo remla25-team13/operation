@@ -6,10 +6,19 @@
     namespace: default
 
   tasks:
+    - name: Download rate limit service manifest
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/istio/istio/release-1.20/samples/ratelimit/rate-limit-service.yaml
+        dest: /tmp/rate-limit-service.yaml
+
     - name: Apply rate limit service
       kubernetes.core.k8s:
         state: present
-        definition: "{{ lookup('file', 'https://raw.githubusercontent.com/istio/istio/release-1.20/samples/ratelimit/rate-limit-service.yaml') }}"
+        src: /tmp/rate-limit-service.yaml
+        namespace: istio-system
+      environment:
+        K8S_AUTH_KUBECONFIG: /home/vagrant/.kube/config
+
 
     - name: Create EnvoyFilter for rate limiting
       kubernetes.core.k8s:
@@ -62,36 +71,9 @@
                                   socket_address:
                                     address: rate-limit
                                     port_value: 8081
-
-    - name: Apply QuotaSpec and QuotaSpecBinding
-      kubernetes.core.k8s:
-        state: present
-        definition:
-          apiVersion: v1
-          kind: List
-          items:
-            - apiVersion: ratelimit.istio.io/v1alpha1
-              kind: QuotaSpec
-              metadata:
-                name: request-count
-                namespace: "{{ namespace }}"
-              spec:
-                rules:
-                  - quotas:
-                      - charge: 1
-                        quota: requestcount
-            - apiVersion: ratelimit.istio.io/v1alpha1
-              kind: QuotaSpecBinding
-              metadata:
-                name: bind-request-count
-                namespace: "{{ namespace }}"
-              spec:
-                quotaSpecs:
-                  - name: request-count
-                    namespace: "{{ namespace }}"
-                services:
-                  - name: "{{ service_name }}"
-                    namespace: "{{ namespace }}"
+      environment:
+        K8S_AUTH_KUBECONFIG: /home/vagrant/.kube/config
 
     - name: Restart Istio ingress gateway
-      ansible.builtin.command: kubectl rollout restart deployment istio-ingressgateway -n istio-system
+      ansible.builtin.command: >
+        kubectl --kubeconfig=/home/vagrant/.kube/config rollout restart deployment istio-ingressgateway -n istio-system
