@@ -81,8 +81,8 @@ Approved PR: https://github.com/remla25-team13/operation/pull/19
 # Week 6 (A5):
 
 -- Gopal: --
-Created PR: 
-Approved PR:
+Created PR: https://github.com/remla25-team13/operation/pull/23 (related to A5)
+Approved PR: https://github.com/remla25-team13/operation/pull/22
 
 -- Petar Petrov: --
 Created PR: 
