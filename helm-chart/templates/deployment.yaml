@@ -40,26 +40,28 @@ spec:
       - name: app-service
         image: {{ .Values.appService.image }}
         env:
-        - name: MODEL_SERVICE_URL
-          value: {{ .Values.appService.modelServiceUrl }}
+        - name: MODEL_SERVICE_URL_A
+          value: {{ .Values.appService.modelServiceUrlA }}
+        - name: MODEL_SERVICE_URL_B
+          value: {{ .Values.appService.modelServiceUrlB }}
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: model-service
+  name: model-service-gauss
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: model-service
+      app: model-service-gauss
   template:
     metadata:
       labels:
-        app: model-service
+        app: model-service-gauss
     spec:
       containers:
-      - name: model-service
+      - name: model-service-gauss
         image: {{ .Values.modelService.image }}
         env:
         - name: VERSION
@@ -67,6 +69,37 @@ spec:
         - name: MODE
           value: "{{ .Values.modelService.mode }}"
         - name: PORT
-          value: "{{ .Values.modelService.port }}"
+          value: "{{ .Values.modelService.portA }}"
+        - name: MODEL_TYPE
+          value: "gauss"
         ports:
-        - containerPort: {{ .Values.modelService.port }}
+        - containerPort: {{ .Values.modelService.portA }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-service-multi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: model-service-multi
+  template:
+    metadata:
+      labels:
+        app: model-service-multi
+    spec:
+      containers:
+      - name: model-service-multi
+        image: {{ .Values.modelService.image }}
+        env:
+        - name: VERSION
+          value: "{{ .Values.modelService.version }}"
+        - name: MODE
+          value: "{{ .Values.modelService.mode }}"
+        - name: PORT
+          value: "{{ .Values.modelService.portB }}"
+        - name: MODEL_TYPE
+          value: "multi"
+        ports:
+        - containerPort: {{ .Values.modelService.portB }}
