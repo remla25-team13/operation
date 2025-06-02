@@ -114,51 +114,32 @@
         state: present
         src: "/tmp/dashboard-ingress.yaml"
 
-    # Step 23: Install Istio
-    - name: Download Istio 1.25.2
+# Step 23: Install Istio
+    - name: Download Istio 1.26.0
       get_url:
-        url: https://github.com/istio/istio/releases/download/1.25.2/istio-1.25.2-linux-amd64.tar.gz
+        url: https://github.com/istio/istio/releases/download/1.26.0/istio-1.26.0-linux-amd64.tar.gz
         dest: /tmp/istio.tar.gz
-
-    - name: Unpack Istio
+        mode: '0644'
       become: true
-      unarchive:
+
+    - name: Extract Istio
+      ansible.builtin.unarchive:
         src: /tmp/istio.tar.gz
-        dest: /opt
+        dest: /home/vagrant/
         remote_src: yes
+      become: true
+      args:
+        creates: /home/vagrant/istio-1.26.0/manifests
 
     - name: Add istioctl to PATH
       lineinfile:
         path: /home/vagrant/.bashrc
-        line: 'export PATH="$PATH:/opt/istio-1.25.2/bin"'
+        line: 'export PATH=$PATH:/home/vagrant/istio-1.26.0/bin'
         insertafter: EOF
+        state: present
 
-    - name: Source .bashrc to make istioctl available immediately
-      shell: source /home/vagrant/.bashrc
-      args:
-        executable: /bin/bash
-
-    - name: Create IstioOperator config file
-      copy:
-        dest: /tmp/istio-operator.yaml
-        content: |
-          apiVersion: install.istio.io/v1alpha1
-          kind: IstioOperator
-          metadata:
-            name: istio-control-plane
-            namespace: istio-system
-          spec:
-            profile: default
-            components:
-              ingressGateways:
-              - name: istio-ingressgateway
-                enabled: true
-                k8s:
-                  service:
-                    loadBalancerIP: 192.168.56.91
-
-    - name: Install Istio with custom configuration
+    - name: Run istioctl install (demo profile)
       shell: |
-        /opt/istio-1.25.2/bin/istioctl install -y -f /tmp/istio-operator.yaml
+        istioctl install --set profile=demo -y
       args:
-        executable: /bin/bash
+        creates: /home/vagrant/istio-1.26.0/manifests

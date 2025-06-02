@@ -89,7 +89,7 @@
       ansible.builtin.apt:
         pkg:
           - "containerd=1.7.24-0ubuntu1~24.04.2"
-          - "runc=1.1.12-0ubuntu3.1"
+          - "runc"
           - "kubeadm=1.32.4-1.1"
           - "kubelet=1.32.4-1.1"
           - "kubectl=1.32.4-1.1"
