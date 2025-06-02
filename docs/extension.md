@@ -55,10 +55,10 @@ An automated E2E Deployment Verification Pipeline would solve this problem. This
 ![E2E Deployment Verification Pipeline](e2e-pipeline.svg)
 
 ### Supporting Sources
-- [What is End-to-End Testing? – CircleCI Blog](https://circleci.com/blog/what-is-end-to-end-testing/#:~:text=Jacob%20Schmitt,to%20validate%20the%20complete%20system.)
+- [What is End-to-End Testing? – CircleCI Blog](https://circleci.com/blog/what-is-end-to-end-testing/)
 - [End-to-End Testing – Microsoft Code With Engineering Playbook](https://microsoft.github.io/code-with-engineering-playbook/automated-testing/e2e-testing/)
 - [Running End-to-End Tests with GitHub Actions – Medium](https://medium.com/tomorrowapp/running-end-to-end-tests-with-github-actions-d45b70c032e6)
-- [End-to-End (E2E) Testing – Katalon Blog](https://katalon.com/resources-center/blog/end-to-end-e2e-testing#:~:text=requiring%20human%20judgment.-,8.,avoid%20slowing%20down%20the%20pipeline.)
+- [End-to-End (E2E) Testing – Katalon Blog](https://katalon.com/resources-center/blog/end-to-end-e2e-testing)
 
 ### How to Measure Improvement
 
