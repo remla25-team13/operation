@@ -85,8 +85,8 @@ Created PR: https://github.com/remla25-team13/operation/pull/23 (related to A5)
 Approved PR: https://github.com/remla25-team13/operation/pull/22
 
 -- Petar Petrov: --
-Created PR: 
-Approved PR: 
+Created PR: https://github.com/remla25-team13/operation/pull/24 (related to A5)
+Approved PR: https://github.com/remla25-team13/operation/pull/23
 
 -- Tijmen Meijer: --
 Created PR: https://github.com/remla25-team13/operation/pull/22
