@@ -99,3 +99,25 @@ Approved PR: https://github.com/remla25-team13/model-training/pull/9
 -- Rok Stular --
 Created PR: https://github.com/remla25-team13/operation/pull/26 (related to A5)
 Approved PR: https://github.com/remla25-team13/operation/pull/25
+
+# Week 6:
+
+-- Gopal: --
+Created PR:
+Approved PR:
+
+-- Petar Petrov: --
+Created PR:
+Approved PR:
+
+-- Tijmen Meijer: --
+Created PR:
+Approved PR:
+
+-- Evan Handgraaf: --
+Created PR:
+Approved PR: https://github.com/remla25-team13/model-training/pull/11#pullrequestreview-2907770756
+
+-- Rok Stular --
+Created PR:
+Approved PR:
