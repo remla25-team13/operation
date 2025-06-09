@@ -22,9 +22,13 @@ running helm can be done by having a kubernetes cluster active and inputting the
 helm install ./helm-chart --generate-name OR
 helm install team10-release ./helm-chart
 
+## Kubernetes ConfigMap and Secret Usage
+
+- The deployment uses a Secret (`app-auth-token`) to provide sensitive data (auth token) to the app-service.
+- The deployment uses a ConfigMap (`app-config`) to provide non-sensitive configuration (model service URLs) as environment variables.
+
 ## Pointers to relevant files that help outsiders understand the code base.
 You can find our Activity feedback at https://github.com/remla25-team13/operation/blob/main/ACTIVITY.md
-
 
 ## A list of all relevant repositories for the project.
 - lib-ml - https://github.com/remla25-team13/lib-ml
