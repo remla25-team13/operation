@@ -39,11 +39,17 @@ spec:
       containers:
       - name: app-service
         image: {{ .Values.appService.image }}
-        env:
-        - name: MODEL_SERVICE_URL_A
-          value: {{ .Values.appService.modelServiceUrlA }}
-        - name: MODEL_SERVICE_URL_B
-          value: {{ .Values.appService.modelServiceUrlB }}
+        envFrom:
+        - configMapRef:
+            name: app-config
+        volumeMounts:
+        - name: auth-token
+          mountPath: /run/secrets/auth_token
+          subPath: auth_token
+      volumes:
+      - name: auth-token
+        secret:
+          secretName: app-auth-token
 
 ---
 apiVersion: apps/v1
