@@ -115,7 +115,7 @@ Created PR:
 Approved PR:
 
 -- Evan Handgraaf: --
-Created PR:
+Created PR: https://github.com/remla25-team13/operation/pull/29
 Approved PR: https://github.com/remla25-team13/model-training/pull/11#pullrequestreview-2907770756
 
 -- Rok Stular --
