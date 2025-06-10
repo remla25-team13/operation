@@ -111,8 +111,8 @@ Created PR: https://github.com/remla25-team13/model-training/pull/11
 Approved PR: 
 
 -- Tijmen Meijer: --
-Created PR:
-Approved PR:
+Created PR: https://github.com/remla25-team13/model-training/pull/10
+Approved PR: https://github.com/remla25-team13/app-service/pull/5
 
 -- Evan Handgraaf: --
 Created PR: https://github.com/remla25-team13/operation/pull/29
