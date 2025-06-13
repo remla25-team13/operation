@@ -63,7 +63,7 @@ Created PR: https://github.com/remla25-team13/model-training/pull/6 (related to 
 Approved PR: https://github.com/remla25-team13/model-training/pull/4
 
 -- Petar Petrov: --
-Created PR: https://github.com/remla25-team13/model-training/pull/5 (related to A4)
+Created PR: https://github.com/remla25-team13/model-training/pull/5 (related to A4), https://github.com/remla25-team13/operation/pull/18 (related to A2)
 Approved PR: https://github.com/remla25-team13/operation/pull/19
 
 -- Tijmen Meijer: --
