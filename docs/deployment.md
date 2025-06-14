@@ -84,8 +84,6 @@ This system is composed of three Dockerized services orchestrated via Docker Com
 2. `app-service`
 - Backend API layer that communicates with the model.
 - **Image**: `ghcr.io/remla25-team13/app-service:latest`
-- **Environment Variables**:
-  - `MODEL_SERVICE_URL`: URL of the `model-service`, built dynamically using `MODEL_SERVICE_PORT`.
 - **Depends On**: `model-service`
 - **Secrets**:
   - `auth_token`: Shared secret used for authentication with the `model-service`.
@@ -96,7 +94,7 @@ This system is composed of three Dockerized services orchestrated via Docker Com
 - **Environment Variables**:
   - `VERSION`: Model version
   - `MODE`: Set to `PROD`
-  - `PORT`: Port number (value must be passed as `MODEL_SERVICE_PORT`)
+  - `PORT`: Port number
 - **Ports**: Exposes the port defined by `MODEL_SERVICE_PORT`
 - **Secrets**:
   - `auth_token`: Same shared secret as used by `app-service`.
