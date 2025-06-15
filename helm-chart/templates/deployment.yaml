@@ -2,19 +2,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app-frontend
+  name: {{ .Values.prefix }}-app-frontend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: app-frontend
+      app: {{ .Values.prefix }}-app-frontend
   template:
     metadata:
       labels:
-        app: app-frontend
+        app: {{ .Values.prefix }}-app-frontend
     spec:
       containers:
-      - name: app-frontend
+      - name: {{ .Values.prefix }}-app-frontend
         image: {{ .Values.appFrontend.image }}
         ports:
         - containerPort: {{ .Values.appFrontend.port }}
@@ -23,21 +23,19 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app-service
+  name: {{ .Values.prefix }}-app-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: app-service
-      version: v1
+      app: {{ .Values.prefix }}-app-service
   template:
     metadata:
       labels:
-        app: app-service
-        version: v1
+        app: {{ .Values.prefix }}-app-service
     spec:
       containers:
-      - name: app-service
+      - name: {{ .Values.prefix }}-app-service
         image: {{ .Values.appService.image }}
         env:
         - name: MODEL_SERVICE_URL_A
@@ -49,19 +47,21 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: model-service-gauss
+  name: {{ .Values.prefix }}-model-service-gauss
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: model-service-gauss
+      app: {{ .Values.prefix }}-model-service
+      version: v1
   template:
     metadata:
       labels:
-        app: model-service-gauss
+        app: {{ .Values.prefix }}-model-service
+        version: v1
     spec:
       containers:
-      - name: model-service-gauss
+      - name: {{ .Values.prefix }}-model-service-gauss
         image: {{ .Values.modelService.image }}
         env:
         - name: VERSION
@@ -78,19 +78,21 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: model-service-multi
+  name: {{ .Values.prefix }}-model-service-multi
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: model-service-multi
+      app: {{ .Values.prefix }}-model-service
+      version: v2
   template:
     metadata:
       labels:
-        app: model-service-multi
+        app: {{ .Values.prefix }}-model-service
+        version: v2
     spec:
       containers:
-      - name: model-service-multi
+      - name: {{ .Values.prefix }}-model-service-multi
         image: {{ .Values.modelService.image }}
         env:
         - name: VERSION

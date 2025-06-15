@@ -1,11 +1,13 @@
+prefix: team10
+
 appFrontend:
   image: ghcr.io/remla25-team13/app-frontend:latest
   port: 4200
 
 appService:
   image: ghcr.io/remla25-team13/app-service:latest
-  modelServiceUrlA: "http://model-service:5000"
-  modelServiceUrlB: "http://model-service:5001"
+  modelServiceUrlA: "http://team10-model-service:5000"
+  modelServiceUrlB: "http://team10-model-service:5001"
   servicePort: 80
   containerPort: 8080
 
