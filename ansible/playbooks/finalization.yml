@@ -114,24 +114,33 @@
         state: present
         src: "/tmp/dashboard-ingress.yaml"
 
-    # Step 23: Install Istio
+# Step 23: Install Istio
     - name: Download Istio 1.25.2
       get_url:
         url: https://github.com/istio/istio/releases/download/1.25.2/istio-1.25.2-linux-amd64.tar.gz
         dest: /tmp/istio.tar.gz
+        mode: '0644'
+      args:
+        creates: /tmp/istio.tar.gz  # this prevents re-download if file exists
 
-    - name: Unpack Istio
-      become: true
-      unarchive:
+
+
+    - name: Extract Istio
+      ansible.builtin.unarchive:
         src: /tmp/istio.tar.gz
-        dest: /opt
+        dest: /home/vagrant/
         remote_src: yes
+      become: true
+      args:
+        creates: /home/vagrant/istio-1.25.2/manifests
 
     - name: Add istioctl to PATH
       lineinfile:
         path: /home/vagrant/.bashrc
-        line: 'export PATH="$PATH:/opt/istio-1.25.2/bin"'
+        line: 'export PATH=$PATH:/home/vagrant/istio-1.25.2/bin'
         insertafter: EOF
+        state: present
+
 
     - name: Source .bashrc to make istioctl available immediately
       shell: source /home/vagrant/.bashrc
@@ -159,8 +168,9 @@
 
     - name: Install Istio with custom configuration
       shell: |
-        /opt/istio-1.25.2/bin/istioctl install -y -f /tmp/istio-operator.yaml
+        istioctl install --set profile=demo -y
       args:
+        creates: /home/vagrant/istio-1.25.2/manifests
         executable: /bin/bash
 
     - name: Add prometheus Helm repository
