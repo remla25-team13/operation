@@ -63,11 +63,11 @@ Created PR: https://github.com/remla25-team13/model-training/pull/6 (related to 
 Approved PR: https://github.com/remla25-team13/model-training/pull/4
 
 -- Petar Petrov: --
-Created PR: https://github.com/remla25-team13/model-training/pull/5 (related to A4)
+Created PR: https://github.com/remla25-team13/model-training/pull/5 (related to A4), https://github.com/remla25-team13/operation/pull/18 (related to A2)
 Approved PR: https://github.com/remla25-team13/operation/pull/19
 
 -- Tijmen Meijer: --
-Created PR: https://github.com/remla25-team13/model-training/pull/4 (related to A4)
+Created PR: https://github.com/remla25-team13/model-training/pull/4 (related to A4), https://github.com/remla25-team13/operation/pull/19 (related to A2)
 Approved PR: https://github.com/remla25-team13/model-training/pull/6 (related to A4)
 
 -- Evan Handgraaf: --
@@ -77,3 +77,47 @@ Approved PR:
 -- Rok Stular --
 Created PR: https://github.com/remla25-team13/model-training/pull/8 (related to A4)
 Approved PR: https://github.com/remla25-team13/operation/pull/19
+
+# Week 6 (A5):
+
+-- Gopal: --
+Created PR: https://github.com/remla25-team13/operation/pull/23 (related to A5)
+Approved PR: https://github.com/remla25-team13/operation/pull/22
+
+-- Petar Petrov: --
+Created PR: https://github.com/remla25-team13/operation/pull/24 (related to A5)
+Approved PR: https://github.com/remla25-team13/operation/pull/23
+
+-- Tijmen Meijer: --
+Created PR: https://github.com/remla25-team13/operation/pull/22 (related to A5)
+Approved PR: https://github.com/remla25-team13/app-service/pull/4
+
+-- Evan Handgraaf: --
+Created PR: https://github.com/remla25-team13/operation/pull/25 (related to A5)
+Approved PR: https://github.com/remla25-team13/model-training/pull/9
+
+-- Rok Stular --
+Created PR: https://github.com/remla25-team13/operation/pull/26 (related to A5)
+Approved PR: https://github.com/remla25-team13/operation/pull/25
+
+# Week 7:
+
+-- Gopal: --
+Created PR:
+Approved PR:
+
+-- Petar Petrov: --
+Created PR: https://github.com/remla25-team13/model-training/pull/11
+Approved PR: https://github.com/remla25-team13/operation/pull/22
+
+-- Tijmen Meijer: --
+Created PR: https://github.com/remla25-team13/model-training/pull/10
+Approved PR: https://github.com/remla25-team13/app-service/pull/5
+
+-- Evan Handgraaf: --
+Created PR: https://github.com/remla25-team13/operation/pull/29
+Approved PR: https://github.com/remla25-team13/model-training/pull/11#pullrequestreview-2907770756
+
+-- Rok Stular --
+Created PR: https://github.com/remla25-team13/app-service/pull/5 (related to A5)
+Approved PR: https://github.com/remla25-team13/app-service/pull/4
