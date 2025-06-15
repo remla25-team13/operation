@@ -1,4 +1,4 @@
-prefix: team10
+prefix: team13
 
 appFrontend:
   image: ghcr.io/remla25-team13/app-frontend:latest
@@ -6,8 +6,8 @@ appFrontend:
 
 appService:
   image: ghcr.io/remla25-team13/app-service:latest
-  modelServiceUrlA: "http://team10-model-service:5000"
-  modelServiceUrlB: "http://team10-model-service:5001"
+  modelServiceUrlA: "http://team13-model-service:5000"
+  modelServiceUrlB: "http://team13-model-service:5001"
   servicePort: 80
   containerPort: 8080
 
