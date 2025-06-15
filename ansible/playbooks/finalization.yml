@@ -120,7 +120,9 @@
         url: https://github.com/istio/istio/releases/download/1.25.2/istio-1.25.2-linux-amd64.tar.gz
         dest: /tmp/istio.tar.gz
         mode: '0644'
-      become: true
+      args:
+        creates: /tmp/istio.tar.gz  # this prevents re-download if file exists
+
 
 
     - name: Extract Istio

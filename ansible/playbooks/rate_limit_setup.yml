@@ -61,7 +61,7 @@
                     name: rate_limit_cluster
                     type: STRICT_DNS
                     connect_timeout: 0.25s
-                    lb_policy: ROUND_ROBIN
+                    lb_policy: RING_HASH
                     load_assignment:
                       cluster_name: rate_limit_cluster
                       endpoints:
