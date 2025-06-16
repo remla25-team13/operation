@@ -7,6 +7,15 @@
       delegate_to: ctrl # Runs this on the controller node instead of workers
       run_once: true # Only need to run this once for all workers
 
+    - name: Wait for the communication from control to node to be established
+      delegate_to: ctrl
+      shell: |
+        ping -c 1 -W 1 {{ inventory_hostname }} > /dev/null 2>&1
+      register: ping_result
+      until: ping_result.rc == 0
+      retries: 300
+      delay: 0
+
     - name: Join worker node to Kubernetes cluster
       shell: "{{ join_command.stdout }}"
 
