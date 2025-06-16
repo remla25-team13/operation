@@ -75,7 +75,7 @@ Created PR: https://github.com/remla25-team13/model-training/pull/7 (related to 
 Approved PR: 
 
 -- Rok Stular --
-Created PR: https://github.com/remla25-team13/model-training/pull/8 (related to A4)
+Created PR: https://github.com/remla25-team13/model-training/pull/8 (related to A4), https://github.com/remla25-team13/app-service/pull/5 (related to A3)
 Approved PR: https://github.com/remla25-team13/operation/pull/19
 
 # Week 6 (A5):
@@ -119,7 +119,7 @@ Created PR: https://github.com/remla25-team13/operation/pull/29
 Approved PR: https://github.com/remla25-team13/model-training/pull/11#pullrequestreview-2907770756
 
 -- Rok Stular --
-Created PR: https://github.com/remla25-team13/app-service/pull/5 (related to A5)
+Created PR: https://github.com/remla25-team13/app-service/pull/5 (related to A5), https://github.com/remla25-team13/app-service/pull/7 (related to A3)
 Approved PR: https://github.com/remla25-team13/app-service/pull/4
 
 # Week 8:
