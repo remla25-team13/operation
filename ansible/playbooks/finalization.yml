@@ -114,6 +114,25 @@
         state: present
         src: "/tmp/dashboard-ingress.yaml"
 
+    - name: Add Prometheus repo
+      kubernetes.core.helm_repository:
+        name: prometheus-community
+        repo_url: https://prometheus-community.github.io/helm-charts
+    - name: Copy monitoring values to remote machine
+      ansible.builtin.copy:
+        src: files/monitoring-values.yaml
+        dest: /tmp/monitoring-values.yaml
+    - name: Install kube-prometheus-stack (Prometheus-Operator + Grafana)
+      kubernetes.core.helm:
+        name: monitoring
+        chart_ref: prometheus-community/kube-prometheus-stack
+        namespace: monitoring
+        create_namespace: true
+        update_repo_cache: true
+        values_files:
+          - /tmp/monitoring-values.yaml
+        
+
 # Step 23: Install Istio
     - name: Download Istio 1.25.2
       get_url:
@@ -172,57 +191,3 @@
       args:
         creates: /home/vagrant/istio-1.25.2/manifests
         executable: /bin/bash
-
-    - name: Add prometheus Helm repository
-      community.kubernetes.helm_repository:
-        name: prometheus-community
-        repo_url: https://prometheus-community.github.io/helm-charts
-
-    - name: Install Prometheus Helm chart
-      community.kubernetes.helm:
-        name: prometheus
-        chart_ref: prometheus-community/kube-prometheus-stack
-        release_namespace: monitoring
-        create_namespace: true
-        values:
-          prometheus:
-            prometheusSpec:
-              serviceMonitorSelectorNilUsesHelmValues: false
-
-    - name: Create ServiceMonitor for app-service
-      copy:
-        dest: /tmp/app-service-monitor.yaml
-        content: |
-          apiVersion: monitoring.coreos.com/v1
-          kind: ServiceMonitor
-          metadata:
-            name: app-service-monitor
-            namespace: monitoring
-            labels:
-              release: prometheus
-          spec:
-            selector:
-              matchLabels:
-                app: app-service
-            namespaceSelector:
-              matchNames:
-                - default
-            endpoints:
-              - port: http
-                path: /metrics
-                interval: 15s
-    
-    - name: Apply ServiceMonitor manifest
-      kubernetes.core.k8s:
-        state: present
-        src: /tmp/app-service-monitor.yaml
-    
-    - name: Copy prometheus-ingress.yaml to VM
-      copy:
-        src: files/prometheus-ingress.yaml
-        dest: /tmp/prometheus-ingress.yaml
-
-    - name: Apply Prometheus Ingress
-      kubernetes.core.k8s:
-        state: present
-        src: /tmp/prometheus-ingress.yaml
