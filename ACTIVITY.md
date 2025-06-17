@@ -137,7 +137,7 @@ Created PR:
 Approved PR: 
 
 -- Evan Handgraaf: --
-Created PR: 
+Created PR: https://github.com/remla25-team13/operation/pull/33 (related to A5)
 Approved PR: 
 
 -- Rok Stular --
