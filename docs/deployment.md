@@ -16,6 +16,10 @@ After reading, you should be able to contribute to design discussions.
     - [model-service](#model-service)
     - [model-training](#model-training)
     - [operation](#operation)
+  - [Architecture Overview](#architecture-overview)
+    - [Deployment Structure](#deployment-structure)
+    - [Data Flow](#data-flow)
+    - [Deployed Resource Types and Relations](#deployed-resource-types-and-relations)
   - [Deployment](#deployment)
     - [Dockerized](#dockerized)
       - [System Overview](#system-overview)
@@ -30,10 +34,6 @@ After reading, you should be able to contribute to design discussions.
   - [Monitoring](#monitoring)
     - [Prometheus](#prometheus)
     - [Grafana](#grafana)
-  - [Architecture Overview](#architecture-overview)
-    - [Deployment Structure](#deployment-structure)
-    - [Data Flow](#data-flow)
-    - [Deployed Resource Types and Relations](#deployed-resource-types-and-relations)
 
 ## Repositories
 
@@ -110,6 +110,45 @@ Machine learning training pipeline for sentiment analysis.
 ### operation
 
 Composes all services and contains additional information and collaboration references.
+
+## Architecture Overview
+
+![System Architecture](architecture.jpg)
+
+The diagram above visually represents the described architecture, showing the flow of requests, dependencies between services, and integration with monitoring tools. The dynamic routing decision (90/10 split) is marked, clarifying where traffic management occurs.
+
+### Deployment Structure
+
+- **Istio Gateway:** Entry point for all user traffic. It manages and routes incoming requests to different service versions.
+- **Traffic Routing:** 
+  - **Dynamic Routing Decision:** The Istio VirtualService splits incoming traffic: 90% to `v1`, 10% to `v2`. This enables safe releases and A/B testing.
+- **Application Components:**
+  - **app-frontend:** Handles user requests, communicates with `app-service` via REST.
+  - **app-service:** Core logic, depends on `lib-version`.
+  - **model-service (v2 only):** Provides ML features, depends on `lib-ml`.
+- **Dependencies:**
+  - `app-service` → `lib-version`
+  - `model-service` → `lib-ml`
+- **Monitoring:**
+  - **Prometheus:** Collects metrics from all services.
+  - **Grafana:** Visualizes metrics for observability.
+
+### Data Flow
+
+1. **User Request:** User visits the application; request enters via Istio Gateway.
+2. **Dynamic Routing:** Istio VirtualService routes 90% of requests to `v1`, 10% to `v2`.
+3. **Service Interaction:**
+    - `app-frontend` receives the request, calls `app-service`.
+    - `app-service` calls `model-service` for ML tasks.
+4. **Dependencies:** Each service uses its respective library for core logic.
+5. **Metrics:** All services expose metrics, scraped by Prometheus and visualized in Grafana.
+
+### Deployed Resource Types and Relations
+
+- **Kubernetes Deployments:** `app-frontend`, `app-service`, `model-service`
+- **Kubernetes Services:** Expose each deployment internally
+- **Istio Gateway & VirtualService:** Manage ingress and traffic splitting
+- **Prometheus & Grafana:** Monitoring and visualization stack
 
 ## Deployment
 
@@ -216,42 +255,3 @@ In our project, Prometheus supports model experiments by exposing and collecting
 
 Grafana is a visualization platform that queries Prometheus and displays metrics in dashboards.  
 We use Grafana to monitor our system and visualize experiment results, including custom UIs for specific needs.
-
-## Architecture Overview
-
-![System Architecture](architecture.jpg)
-
-The diagram above visually represents the described architecture, showing the flow of requests, dependencies between services, and integration with monitoring tools. The dynamic routing decision (90/10 split) is marked, clarifying where traffic management occurs.
-
-### Deployment Structure
-
-- **Istio Gateway:** Entry point for all user traffic. It manages and routes incoming requests to different service versions.
-- **Traffic Routing:** 
-  - **Dynamic Routing Decision:** The Istio VirtualService splits incoming traffic: 90% to `v1`, 10% to `v2`. This enables safe releases and A/B testing.
-- **Application Components:**
-  - **app-frontend:** Handles user requests, communicates with `app-service` via REST.
-  - **app-service:** Core logic, depends on `lib-version`.
-  - **model-service (v2 only):** Provides ML features, depends on `lib-ml`.
-- **Dependencies:**
-  - `app-service` → `lib-version`
-  - `model-service` → `lib-ml`
-- **Monitoring:**
-  - **Prometheus:** Collects metrics from all services.
-  - **Grafana:** Visualizes metrics for observability.
-
-### Data Flow
-
-1. **User Request:** User visits the application; request enters via Istio Gateway.
-2. **Dynamic Routing:** Istio VirtualService routes 90% of requests to `v1`, 10% to `v2`.
-3. **Service Interaction:**
-    - `app-frontend` receives the request, calls `app-service`.
-    - `app-service` calls `model-service` for ML tasks.
-4. **Dependencies:** Each service uses its respective library for core logic.
-5. **Metrics:** All services expose metrics, scraped by Prometheus and visualized in Grafana.
-
-### Deployed Resource Types and Relations
-
-- **Kubernetes Deployments:** `app-frontend`, `app-service`, `model-service`
-- **Kubernetes Services:** Expose each deployment internally
-- **Istio Gateway & VirtualService:** Manage ingress and traffic splitting
-- **Prometheus & Grafana:** Monitoring and visualization stack
