@@ -20,6 +20,7 @@ After reading, you should be able to contribute to design discussions.
     - [Deployment Structure](#deployment-structure)
     - [Data Flow](#data-flow)
     - [Deployed Resource Types and Relations](#deployed-resource-types-and-relations)
+    - [Key Design Considerations](#key-design-considerations)
   - [Deployment](#deployment)
     - [Dockerized](#dockerized)
       - [System Overview](#system-overview)
@@ -149,6 +150,12 @@ The diagram above visually represents the described architecture, showing the fl
 - **Kubernetes Services:** Expose each deployment internally
 - **Istio Gateway & VirtualService:** Manage ingress and traffic splitting
 - **Prometheus & Grafana:** Monitoring and visualization stack
+
+### Key Design Considerations
+
+- **Scalability:** Each component is independently deployable and therefore scalable.
+- **Safe Releases:** Dynamic routing enables gradual rollouts and quick rollback.
+- **Modularity :** New services or dependencies can be added with minimal disruption.
 
 ## Deployment
 
