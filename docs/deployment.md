@@ -39,7 +39,7 @@ After reading, you should be able to contribute to design discussions.
 
 This repository contains documentation for our deployment structure.
 
-In addition, there are six other repositories containing the main components of the application:
+In addition, there are six other repositories containing the components of the application:
 
 - **lib-ml** — [GitHub](https://github.com/remla25-team13/lib-ml)
 - **lib-version** — [GitHub](https://github.com/remla25-team13/lib-version)
