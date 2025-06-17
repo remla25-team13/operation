@@ -125,7 +125,7 @@ The diagram above visually represents the described architecture, showing the fl
 - **Application Components:**
   - **app-frontend:** Handles user requests, communicates with `app-service` via REST.
   - **app-service:** Core logic, depends on `lib-version`.
-  - **model-service (v2 only):** Provides ML features, depends on `lib-ml`.
+  - **model-service:** Provides ML features, depends on `lib-ml`.
 - **Dependencies:**
   - `app-service` → `lib-version`
   - `model-service` → `lib-ml`
