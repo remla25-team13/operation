@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: app-frontend
+  name: {{ .Values.prefix }}-app-frontend
 spec:
   selector:
-    app: app-frontend
+    app: {{ .Values.prefix }}-app-frontend
   ports:
     - protocol: TCP
       port: {{ .Values.appFrontend.port }}
@@ -16,14 +16,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: app-service
+  name: {{ .Values.prefix }}-app-service
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/path: /metrics
-    prometheus.io/port: "8080"
+    prometheus.io/port: "{{ .Values.appService.containerPort }}"
 spec:
   selector:
-    app: app-service
+    app: {{ .Values.prefix }}-app-service
   ports:
     - name: http
       protocol: TCP
@@ -35,12 +35,29 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: model-service
+  name: {{ .Values.prefix }}-model-service-gauss
 spec:
   selector:
-    app: model-service
+    app: {{ .Values.prefix }}-model-service
+    version: v1
   ports:
     - protocol: TCP
-      port: {{ .Values.modelService.port }}
-      targetPort: {{ .Values.modelService.port }}
+      port: {{ .Values.modelService.portA }}
+      targetPort: {{ .Values.modelService.portA }}
+  type: ClusterIP
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.prefix }}-model-service-multi
+spec:
+  selector:
+    app: {{ .Values.prefix }}-model-service
+    version: v2
+  ports:
+    - protocol: TCP
+      port: {{ .Values.modelService.portB }}
+      targetPort: {{ .Values.modelService.portB }}
   type: ClusterIP

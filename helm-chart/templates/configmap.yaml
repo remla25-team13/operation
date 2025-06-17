@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: app-config
+  name: {{ .Values.prefix }}-app-config
 data:
   MODEL_SERVICE_URL_A: {{ .Values.appService.modelServiceUrlA | quote }}
   MODEL_SERVICE_URL_B: {{ .Values.appService.modelServiceUrlB | quote }}
