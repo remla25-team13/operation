@@ -32,8 +32,8 @@ After reading, you should be able to contribute to design discussions.
     - [Grafana](#grafana)
   - [Architecture Overview](#architecture-overview)
     - [Deployment Structure](#deployment-structure)
-  - [Data Flow](#data-flow)
-  - [Deployed Resource Types and Relations](#deployed-resource-types-and-relations)
+    - [Data Flow](#data-flow)
+    - [Deployed Resource Types and Relations](#deployed-resource-types-and-relations)
 
 ## Repositories
 
@@ -239,7 +239,7 @@ The diagram above visually represents the described architecture, showing the fl
   - **Prometheus:** Collects metrics from all services.
   - **Grafana:** Visualizes metrics for observability.
 
-## Data Flow
+### Data Flow
 
 1. **User Request:** User visits the application; request enters via Istio Gateway.
 2. **Dynamic Routing:** Istio VirtualService routes 90% of requests to `v1`, 10% to `v2`.
@@ -249,7 +249,7 @@ The diagram above visually represents the described architecture, showing the fl
 4. **Dependencies:** Each service uses its respective library for core logic.
 5. **Metrics:** All services expose metrics, scraped by Prometheus and visualized in Grafana.
 
-## Deployed Resource Types and Relations
+### Deployed Resource Types and Relations
 
 - **Kubernetes Deployments:** `app-frontend`, `app-service`, `model-service`
 - **Kubernetes Services:** Expose each deployment internally
