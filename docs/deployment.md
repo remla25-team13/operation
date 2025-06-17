@@ -3,8 +3,6 @@
 This document describes our deployment structure, data flow, and the connections between components.  
 After reading, you should be able to contribute to design discussions.
 
----
-
 ## Table of Contents
 
 - [Deployment Documentation](#deployment-documentation)
@@ -33,8 +31,6 @@ After reading, you should be able to contribute to design discussions.
     - [Prometheus](#prometheus)
     - [Grafana](#grafana)
 
----
-
 ## Repositories
 
 This repository contains documentation for our deployment structure.
@@ -47,8 +43,6 @@ In addition, there are six other repositories containing the main components of 
 - **app-frontend** — [GitHub](https://github.com/remla25-team13/app-frontend)
 - **model-service** — [GitHub](https://github.com/remla25-team13/model-service)
 - **model-training** — [GitHub](https://github.com/remla25-team13/model-training)
-
----
 
 ## Repository Content
 
@@ -113,8 +107,6 @@ Machine learning training pipeline for sentiment analysis.
 
 Composes all services and contains additional information and collaboration references.
 
----
-
 ## Deployment
 
 ### Dockerized
@@ -156,8 +148,6 @@ Three Dockerized services orchestrated via Docker Compose:
 - **auth_token**
   - Stored in `./auth_token.txt`
   - Mounted into both app-service and model-service for authentication
-
----
 
 ### Vagrant + Kubernetes
 
@@ -204,8 +194,6 @@ Defines a virtual environment with one control node and multiple worker nodes, p
 - **Ctrl:** Sets up Kubernetes control plane, initializes cluster, sets up kubeconfig, installs Flannel CNI, Helm, and `helm-diff`
 - **Finalization:** Installs MetalLB, NGINX Ingress Controller, Kubernetes Dashboard, Istio, and Prometheus (with custom `ServiceMonitor`)
 - **Node:** Joins worker nodes to the cluster, configures kubeconfig
-
----
 
 ## Monitoring
 
