@@ -28,11 +28,11 @@
             addresses:
               - 192.168.56.90-192.168.56.99
 
-    - name: Wait for MetalLB webhook service to become reachable
+    - name: Wait for MetalLB controller pod to become ready
       shell: |
-        kubectl wait --for=condition=Ready pod -l component=controller -n metallb-system --timeout=60s
-      register: metallb_webhook_wait
-      failed_when: metallb_webhook_wait.rc != 0
+        kubectl wait --for=condition=Available deployment -l component=controller -n metallb-system --timeout=60s
+      register: metallb_controller_wait
+      failed_when: metallb_controller_wait.rc != 0
 
     - name: Apply metallb-pool.yaml
       kubernetes.core.k8s:
@@ -56,12 +56,12 @@
 
     # Step 21: Install NGINX Ingress Controller
     - name: Add ingress-nginx Helm repository
-      community.kubernetes.helm_repository:
+      kubernetes.core.helm_repository:
         name: ingress-nginx
         repo_url: https://kubernetes.github.io/ingress-nginx
 
     - name: Install ingress-nginx Helm chart
-      community.kubernetes.helm:
+      kubernetes.core.helm:
         name: ingress-nginx
         chart_ref: ingress-nginx/ingress-nginx
         release_namespace: ingress-nginx
@@ -74,12 +74,12 @@
 
     # Step 22: Install Kubernetes Dashboard
     - name: Add kubernetes-dashboard Helm repository
-      community.kubernetes.helm_repository:
+      kubernetes.core.helm_repository:
         name: kubernetes-dashboard
         repo_url: https://kubernetes.github.io/dashboard/
 
     - name: Install kubernetes-dashboard Helm chart
-      community.kubernetes.helm:
+      kubernetes.core.helm:
         name: kubernetes-dashboard
         chart_ref: kubernetes-dashboard/kubernetes-dashboard
         release_namespace: kubernetes-dashboard
@@ -118,10 +118,12 @@
       kubernetes.core.helm_repository:
         name: prometheus-community
         repo_url: https://prometheus-community.github.io/helm-charts
+
     - name: Copy monitoring values to remote machine
       ansible.builtin.copy:
         src: files/monitoring-values.yaml
         dest: /tmp/monitoring-values.yaml
+
     - name: Install kube-prometheus-stack (Prometheus-Operator + Grafana)
       kubernetes.core.helm:
         name: monitoring
@@ -139,14 +141,12 @@
         url: https://github.com/istio/istio/releases/download/1.25.2/istio-1.25.2-linux-amd64.tar.gz
         dest: /tmp/istio.tar.gz
         mode: '0644'
-      args:
-        creates: /tmp/istio.tar.gz  # this prevents re-download if file exists
-
-
+        checksum: sha256:2a8bc831fe6ceeb02df31651734d06e0954006a8f4780f40d8b5ad60f34471fd
 
     - name: Extract Istio
       ansible.builtin.unarchive:
         src: /tmp/istio.tar.gz
+        mode: '0755'
         dest: /home/vagrant/
         remote_src: yes
       become: true
@@ -191,3 +191,8 @@
       args:
         creates: /home/vagrant/istio-1.25.2/manifests
         executable: /bin/bash
+
+    - name: Install istio CRDs
+      kubernetes.core.k8s:
+        state: present
+        src: /home/vagrant/istio-1.25.2/manifests/charts/base/files/crd-all.gen.yaml
