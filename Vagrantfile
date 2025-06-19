@@ -60,11 +60,11 @@ Vagrant.configure("2") do |config|
       acore.groups = ansible_groups
     end
 
-    ctrl.vm.provision "finalization", type: :ansible do |final|
-      final.compatibility_mode = "2.0"
-      final.playbook = "ansible/playbooks/finalization.yml"
-      final.groups = ansible_groups
-    end
+    # ctrl.vm.provision "finalization", type: :ansible do |final|
+    #   final.compatibility_mode = "2.0"
+    #   final.playbook = "ansible/playbooks/finalization.yml"
+    #   final.groups = ansible_groups
+    # end
   end
   
   #Configure NODES amount of workers

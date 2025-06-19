@@ -30,7 +30,7 @@
 
     - name: Wait for MetalLB controller pod to become ready
       shell: |
-        kubectl wait --for=condition=Available deployment -l component=controller -n metallb-system --timeout=60s
+        kubectl wait --for=condition=Available deployment -l component=controller -n metallb-system --timeout=300s
       register: metallb_controller_wait
       failed_when: metallb_controller_wait.rc != 0
 
@@ -48,6 +48,9 @@
           metadata:
             name: l2-advertisement
             namespace: metallb-system
+          spec:
+            ipAddressPools:
+              - default-pool
 
     - name: Apply metallb-l2advertisement.yaml
       kubernetes.core.k8s:
