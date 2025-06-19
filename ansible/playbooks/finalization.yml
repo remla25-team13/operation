@@ -66,6 +66,7 @@
         chart_ref: ingress-nginx/ingress-nginx
         release_namespace: ingress-nginx
         create_namespace: true
+        release_state: present
         values:
           controller:
             service:
@@ -84,6 +85,7 @@
         chart_ref: kubernetes-dashboard/kubernetes-dashboard
         release_namespace: kubernetes-dashboard
         create_namespace: true
+        release_state: present
 
     - name: Copy dashboard-admin-user.yaml to VM
       copy:
@@ -131,68 +133,46 @@
         namespace: monitoring
         create_namespace: true
         update_repo_cache: true
+        release_state: present
         values_files:
           - /tmp/monitoring-values.yaml
         
 
-# Step 23: Install Istio
-    - name: Download Istio 1.25.2
-      get_url:
-        url: https://github.com/istio/istio/releases/download/1.25.2/istio-1.25.2-linux-amd64.tar.gz
-        dest: /tmp/istio.tar.gz
-        mode: '0644'
-        checksum: sha256:2a8bc831fe6ceeb02df31651734d06e0954006a8f4780f40d8b5ad60f34471fd
+    # Step 23: Install Istio
+    - name: Add istio helm repository
+      kubernetes.core.helm_repository:
+        name: istio
+        repo_url: https://istio-release.storage.googleapis.com/charts
+    
+    - name: Install Istio base chart (version 1.26.0)
+      kubernetes.core.helm:
+        name: istio-base
+        chart_ref: istio/base
+        release_namespace: istio-system
+        create_namespace: true
+        chart_version: 1.26.0
+        release_state: present
 
-    - name: Extract Istio
-      ansible.builtin.unarchive:
-        src: /tmp/istio.tar.gz
-        mode: '0755'
-        dest: /home/vagrant/
-        remote_src: yes
-      become: true
-      args:
-        creates: /home/vagrant/istio-1.25.2/manifests
+    - name: Install Istio discovery chart (version 1.26.0)
+      kubernetes.core.helm:
+        name: istiod
+        chart_ref: istio/istiod
+        release_namespace: istio-system
+        create_namespace: true
+        chart_version: 1.26.0
+        release_state: present
 
-    - name: Add istioctl to PATH
-      lineinfile:
-        path: /home/vagrant/.bashrc
-        line: 'export PATH=$PATH:/home/vagrant/istio-1.25.2/bin'
-        insertafter: EOF
-        state: present
+    - name: Install Istio ingress gateway chart (version 1.26.0)
+      kubernetes.core.helm:
+        name: istio-ingress-gateway
+        chart_ref: istio/gateway
+        release_namespace: istio-system
+        create_namespace: true
+        chart_version: 1.26.0
+        release_state: present
 
-
-    - name: Source .bashrc to make istioctl available immediately
-      shell: source /home/vagrant/.bashrc
-      args:
-        executable: /bin/bash
-
-    - name: Create IstioOperator config file
-      copy:
-        dest: /tmp/istio-operator.yaml
-        content: |
-          apiVersion: install.istio.io/v1alpha1
-          kind: IstioOperator
-          metadata:
-            name: istio-control-plane
-            namespace: istio-system
-          spec:
-            profile: demo
-            components:
-              ingressGateways:
-              - name: istio-ingressgateway
-                enabled: true
-                k8s:
-                  service:
-                    loadBalancerIP: 192.168.56.91
-
-    - name: Install Istio with custom configuration
+    - name: Wait for Istio ingress gateway to become ready
       shell: |
-        istioctl install --set profile=demo -y
-      args:
-        creates: /home/vagrant/istio-1.25.2/manifests
-        executable: /bin/bash
-
-    - name: Install istio CRDs
-      kubernetes.core.k8s:
-        state: present
-        src: /home/vagrant/istio-1.25.2/manifests/charts/base/files/crd-all.gen.yaml
+        kubectl wait --namespace istio-system --for=condition=Available deployment istio-ingress-gateway --timeout=300s
+      register: istio_ingress_wait
+      failed_when: istio_ingress_wait.rc != 0
