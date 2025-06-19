@@ -17,10 +17,6 @@ spec:
             host: {{ .Values.prefix }}-app-service
             subset: v2
           weight: 10
-      headers:
-        request:
-          add:
-            user: "{% random 1 100 %}"
 
 ---
 apiVersion: networking.istio.io/v1beta1
