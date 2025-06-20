@@ -84,3 +84,23 @@ brew services start prometheus
 1. In Grafana, click **+ > Import**.
 2. Upload `grafana/dashboards/k8-dashboard.json` from this repository.
 3. Select your Prometheus data source and click **Import**.
+
+
+## How to run
+
+```bash
+vagrant up
+
+export KUBECONFIG=ansible/playbooks/kubeconfig/admin-ctrl.conf
+
+ansible-playbook -u vagrant -i 192.168.56.100, ansible/playbooks/finalization.yml
+
+helm install helm-chart/ --generate-name
+
+# /etc/hosts
+192.168.56.90 dashboard.local grafana.local prometheus.local
+
+kubectl -n kubernetes-dashboard create token admin-user
+
+vagrant destroy -f
+```

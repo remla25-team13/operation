@@ -23,16 +23,44 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.prefix }}-app-service
+  name: {{ .Values.prefix }}-app-service-v1
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: {{ .Values.prefix }}-app-service
+      version: v1
   template:
     metadata:
       labels:
         app: {{ .Values.prefix }}-app-service
+        version: v1
+    spec:
+      containers:
+      - name: {{ .Values.prefix }}-app-service
+        image: {{ .Values.appService.image }}
+        env:
+        - name: MODEL_SERVICE_URL_A
+          value: {{ .Values.appService.modelServiceUrlA }}
+        - name: MODEL_SERVICE_URL_B
+          value: {{ .Values.appService.modelServiceUrlB }}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.prefix }}-app-service-v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.prefix }}-app-service
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.prefix }}-app-service
+        version: v2
     spec:
       containers:
       - name: {{ .Values.prefix }}-app-service
