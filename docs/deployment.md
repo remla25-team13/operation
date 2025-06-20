@@ -1,143 +1,264 @@
-# Deployment
-This repository contains documentation for the structure of our deployment.
+# Deployment Documentation
 
-Next to this repository there are are six additional repositories containing components of the full application.
-#### A list of all relevant repositories for the project.
-- lib-ml - https://github.com/remla25-team13/lib-ml
-- lib-version - https://github.com/remla25-team13/lib-version
-- app-service - https://github.com/remla25-team13/app-service
-- app-frontend - https://github.com/remla25-team13/app-frontend
-- model-service - https://github.com/remla25-team13/model-service
-- model-training - https://github.com/remla25-team13/model-training
+This document describes our deployment structure, data flow, and the connections between components.  
+After reading, you should be able to contribute to design discussions.
 
-### Repository content
-#### lib-ml 
-This repository contains the shared pre-processing logic which is reused by both the model-training and model-service components.
-The features are as follows:
+## Table of Contents
+
+- [Deployment Documentation](#deployment-documentation)
+  - [Table of Contents](#table-of-contents)
+  - [Repositories](#repositories)
+  - [Repository Content](#repository-content)
+    - [lib-ml](#lib-ml)
+    - [lib-version](#lib-version)
+    - [app-service](#app-service)
+    - [app-frontend](#app-frontend)
+    - [model-service](#model-service)
+    - [model-training](#model-training)
+    - [operation](#operation)
+  - [Architecture Overview](#architecture-overview)
+    - [Deployment Structure](#deployment-structure)
+    - [Data Flow](#data-flow)
+    - [Deployed Resource Types and Relations](#deployed-resource-types-and-relations)
+    - [Key Design Considerations](#key-design-considerations)
+  - [Deployment](#deployment)
+    - [Dockerized](#dockerized)
+      - [System Overview](#system-overview)
+      - [Secrets](#secrets)
+    - [Vagrant + Kubernetes](#vagrant--kubernetes)
+      - [Vagrant File Overview](#vagrant-file-overview)
+      - [Configuration Summary](#configuration-summary)
+      - [Ansible Provisioning](#ansible-provisioning)
+      - [Networking](#networking)
+      - [Ansible Groups](#ansible-groups)
+      - [Ansible Playbooks](#ansible-playbooks)
+  - [Monitoring](#monitoring)
+    - [Prometheus](#prometheus)
+    - [Grafana](#grafana)
+
+## Repositories
+
+This repository contains documentation for our deployment structure.
+
+In addition, there are six other repositories containing the components of the application:
+
+- **lib-ml** — [GitHub](https://github.com/remla25-team13/lib-ml)
+- **lib-version** — [GitHub](https://github.com/remla25-team13/lib-version)
+- **app-service** — [GitHub](https://github.com/remla25-team13/app-service)
+- **app-frontend** — [GitHub](https://github.com/remla25-team13/app-frontend)
+- **model-service** — [GitHub](https://github.com/remla25-team13/model-service)
+- **model-training** — [GitHub](https://github.com/remla25-team13/model-training)
+
+## Repository Content
+
+### lib-ml
+
+Shared pre-processing logic reused by both model-training and model-service.
+
 - Cleans and normalizes input text
 - Removes URLs and punctuation
-- Shared between training and inferenc
+- Shared between training and inference
 
-#### lib-version
-This repository contains a small utility library that provides version information at runtime which is used by app-service.
-The features are as follows:
-- Provides a VersionUtil class to programmatically retrieve the package version.
-- Useful for system information in logs, debug output, or API responses.
-- Version is automatically aligned with Git tags using package metadata.
+### lib-version
 
-#### app-service
-This repository contains the backend app service our REMLA25 project. This is a Flask application which performs REST API calls to the model-service to access the model and returns corresponding results.
-The service allows for the following API-Calls:
-- `GET /` — Returns a greeting message from the app-service.
-- `POST /create` — Performs a non-functional create operation.
-- `GET /read` — Performs a non-functional read operation.
-- `PUT /update` — Performs a non-functional update operation.
-- `DELETE /delete` — Performs a non-functional delete operation.
-- `GET /version/app-service` — Returns the version of the app-service.
-- `GET /version/lib-version` — Returns the version of the `lib-version` library.
-- `POST /predict` — Forwards a review to the model-service for sentiment prediction.
-- `POST /submit` — Submits a review and correctness label for tracking model accuracy.
-- `GET /metrics` — Returns Prometheus-compatible metrics such as prediction counts and model accuracy.
+Utility library providing version information at runtime, used by app-service.
 
-#### app-frontend
-This repository contains the code for the Angular Frontend. This app is a standard angular app which implements a frontend to interact with the app-service api. It allows a user to sumbit a review and check the evaluation of the text by a model. THen the user can modify the prediction if it is incorrect.
+- Provides a `VersionUtil` class to retrieve the package version
+- Useful for logs, debug output, or API responses
+- Version is automatically aligned with Git tags
 
-Unique features are:
-- The custom environment /environments/environment.ts
-- The interaction with the app-service API
+### app-service
 
-#### model-service
-This repository contains the service through which we serve our model. This app is a Flask application which downloads the most recent model artifacts from model-training and serves it to facilitate the following calls from the app-service app:
-- `GET /version/app-service` — Returns the version of the app-service.
-- `POST /predict` — Forwards a review to the model-service for sentiment prediction.
+Backend service (Flask) for the REMLA25 project. Handles REST API calls and communicates with model-service.
 
-#### model-training
-This repository contains the machine learning training pipeline for sentiment analysis on restaurant reviews.
+**API Endpoints:**
+- `GET /` — Greeting message
+- `POST /create` — Non-functional create operation
+- `GET /read` — Non-functional read operation
+- `PUT /update` — Non-functional update operation
+- `DELETE /delete` — Non-functional delete operation
+- `GET /version/app-service` — App-service version
+- `GET /version/lib-version` — lib-version version
+- `POST /predict` — Forwards review for sentiment prediction
+- `POST /submit` — Submits review and correctness label
+- `GET /metrics` — Prometheus metrics (prediction counts, model accuracy)
 
-Features:
-- Loads the historic restaurant reviews dataset.
-- Preprocesses data using lib-ml.
-- Trains and evaluates the sentiment model.
-- Versions and releases the model for deployment.
-- DVC pipeline
-- ML testing 
+### app-frontend
 
-#### operation
-This repository contains code for composing our services together, alongside additional information and collaboration references.
+Angular frontend for interacting with app-service.
 
-### Deployment
+- Custom environment configuration (`/environments/environment.ts`)
+- Interacts with app-service API
+- Users can submit reviews and correct predictions
 
-#### Dockerized 
-The bare-bones version of the app can be ran through docker using the following command:
-`docker compose up --build`
+### model-service
 
-##### System Overview
-This system is composed of three Dockerized services orchestrated via Docker Compose:
+Flask service that serves the latest model artifacts from model-training.
 
-###### Services
-1. `app-frontend`
-- Web-based user interface.
-- **Image**: `ghcr.io/remla25-team13/app-frontend:latest`
-- **Ports**: Exposes `4200` on the host.
-- **Depends On**: `app-service`
+- `GET /version/app-service` — App-service version
+- `POST /predict` — Sentiment prediction
 
-2. `app-service`
-- Backend API layer that communicates with the model.
-- **Image**: `ghcr.io/remla25-team13/app-service:latest`
-- **Depends On**: `model-service`
-- **Secrets**:
-  - `auth_token`: Shared secret used for authentication with the `model-service`.
+### model-training
 
-3. `model-service`
-- Machine learning model service used for predictions.
-- **Image**: `ghcr.io/remla25-team13/model-service:latest`
-- **Environment Variables**:
-  - `VERSION`: Model version
-  - `MODE`: Set to `PROD`
-  - `PORT`: Port number
-- **Ports**: Exposes the port defined by `MODEL_SERVICE_PORT`
-- **Secrets**:
-  - `auth_token`: Same shared secret as used by `app-service`.
+Machine learning training pipeline for sentiment analysis.
 
-##### Secrets
-###### auth_token
-- Stored in `./auth_token.txt`
-- Mounted into both `app-service` and `model-service` for authentication purposes.
+- Loads restaurant reviews dataset
+- Preprocesses data using lib-ml
+- Trains and evaluates sentiment model
+- Versions and releases model for deployment
+- DVC pipeline and ML testing
 
+### operation
 
+Composes all services and contains additional information and collaboration references.
 
-#### Vagrant + Kubernetes
-- The host shoud be running MacOS or Linux.
-- The host should have virtualbox installed.
-- The host should have Vagrant available.
+## Architecture Overview
 
-The application can then be started by cloning our repository and using the following command:
-`vagrant up`
+![System Architecture](architecture.jpg)
 
-##### the Vagrant File describes the following
+The diagram above visually represents the described architecture, showing the flow of requests, dependencies between services, and integration with monitoring tools. The dynamic routing decision (90/10 split) is marked, clarifying where traffic management occurs.
 
-This Vagrantfile defines a virtual environment consisting of one control node and multiple worker nodes, all provisioned with Ansible.
+### Deployment Structure
 
-###### Configuration Summary
-- **Number of Worker Nodes**: default of 2 configurable through the `NODES` parameter
-- **Base Image**: bento/ubuntu-24.04
-- **Provisioner**: Ansible
-- **Provider**: VirtualBox
+- **Istio Gateway:** Entry point for all user traffic. It manages and routes incoming requests to different service versions.
+- **Traffic Routing:** 
+  - **Dynamic Routing Decision:** The Istio VirtualService splits incoming traffic: 90% to `v1`, 10% to `v2`. This enables safe releases and A/B testing.
+- **Application Components:**
+  - **app-frontend:** Handles user requests, communicates with `app-service` via REST.
+  - **app-service:** Core logic, depends on `lib-version`.
+  - **model-service:** Provides ML features, depends on `lib-ml`.
+- **Dependencies:**
+  - `app-service` → `lib-version`
+  - `model-service` → `lib-ml`
+- **Monitoring:**
+  - **Prometheus:** Collects metrics from all services.
+  - **Grafana:** Visualizes metrics for observability.
 
-###### Ansible Provisioning
-All nodes run a general setup via `general.yml`. Additional, role-specific playbooks are executed:
-- `ctrl.yml` for the control node.
-- `node.yml` for each worker.
+### Data Flow
 
-###### Networking
-- **Private Network IPs**: Assigned statically in the `192.168.56.100+` range.
+1. **User Request:** User visits the application; request enters via Istio Gateway.
+2. **Dynamic Routing:** Istio VirtualService routes 90% of requests to `v1`, 10% to `v2`.
+3. **Service Interaction:**
+    - `app-frontend` receives the request, calls `app-service`.
+    - `app-service` calls `model-service` for ML tasks.
+4. **Dependencies:** Each service uses its respective library for core logic.
+5. **Metrics:** All services expose metrics, scraped by Prometheus and visualized in Grafana.
 
-###### Ansible Groups
-- **Control Group**: `ctrl`
-- **Worker Group**: `node-1`, `node-2`
+### Deployed Resource Types and Relations
 
-###### Ansible Playbooks
-- **General** This Ansible playbook provisions all nodes for Kubernetes by setting up SSH keys, disabling swap, enabling kernel modules, and configuring system networking. It installs necessary packages like `containerd`, `kubelet`, `kubeadm`, and `kubectl`, and applies custom containerd settings. It also configures `/etc/hosts` from a template and enables key system services.
-- **Ctrl** This Ansible playbook sets up the Kubernetes control plane on the `ctrl` node. It initializes the cluster with `kubeadm`, sets up the kubeconfig for the `vagrant` user and Ansible host, and installs the Flannel CNI if it's not already present. It also installs Helm and the `helm-diff` plugin for managing charts.
-- **Finalization** This Ansible playbook finalizes the Kubernetes cluster setup by installing key components. It sets up **MetalLB** for LoadBalancer support, **NGINX Ingress Controller**, and the **Kubernetes Dashboard** using Helm. It also installs **Istio** with a custom IP and deploys **Prometheus** for monitoring, including a custom `ServiceMonitor` for `app-service`. 
-- **Node** This Ansible playbook joins all worker nodes to the Kubernetes cluster by running the `kubeadm join` command obtained from the controller node. It ensures the `vagrant` user has the appropriate kubeconfig by creating the `.kube` directory and copying the `kubelet.conf` for access to cluster resources.
+- **Kubernetes Deployments:** `app-frontend`, `app-service`, `model-service`
+- **Kubernetes Services:** Expose each deployment internally
+- **Istio Gateway & VirtualService:** Manage ingress and traffic splitting
+- **Prometheus & Grafana:** Monitoring and visualization stack
+
+### Key Design Considerations
+
+- **Scalability:** Each component is independently deployable and therefore scalable.
+- **Safe Releases:** Dynamic routing enables gradual rollouts and quick rollback.
+- **Modularity :** New services or dependencies can be added with minimal disruption.
+
+## Deployment
+
+### Dockerized
+
+Run the app using Docker Compose:
+
+```sh
+docker compose up --build
+```
+
+#### System Overview
+
+Three Dockerized services orchestrated via Docker Compose:
+
+1. **app-frontend**
+   - Web-based UI
+   - **Image:** `ghcr.io/remla25-team13/app-frontend:latest`
+   - **Ports:** 4200
+   - **Depends on:** app-service
+
+2. **app-service**
+   - Backend API
+   - **Image:** `ghcr.io/remla25-team13/app-service:latest`
+   - **Depends on:** model-service
+   - **Secrets:** `auth_token` (for authentication with model-service)
+
+3. **model-service**
+   - ML model service
+   - **Image:** `ghcr.io/remla25-team13/model-service:latest`
+   - **Environment Variables:**
+     - `VERSION` — Model version
+     - `MODE` — Set to `PROD`
+     - `PORT` — Port number
+   - **Ports:** Exposes `MODEL_SERVICE_PORT`
+   - **Secrets:** `auth_token` (shared with app-service)
+
+#### Secrets
+
+- **auth_token**
+  - Stored in `./auth_token.txt`
+  - Mounted into both app-service and model-service for authentication
+
+### Vagrant + Kubernetes
+
+**Requirements:**
+- Host: macOS or Linux
+- VirtualBox installed
+- Vagrant installed
+
+Start the application:
+
+```sh
+vagrant up
+```
+
+#### Vagrant File Overview
+
+Defines a virtual environment with one control node and multiple worker nodes, provisioned with Ansible.
+
+#### Configuration Summary
+
+- **Worker Nodes:** Default 2 (configurable via `NODES`)
+- **Base Image:** `bento/ubuntu-24.04`
+- **Provisioner:** Ansible
+- **Provider:** VirtualBox
+
+#### Ansible Provisioning
+
+- All nodes: `general.yml`
+- Control node: `ctrl.yml`
+- Each worker: `node.yml`
+
+#### Networking
+
+- **Private Network IPs:** Static, `192.168.56.100+`
+
+#### Ansible Groups
+
+- **Control Group:** `ctrl`
+- **Worker Groups:** `node-1`, `node-2`
+
+#### Ansible Playbooks
+
+- **General:** Prepares all nodes for Kubernetes (SSH keys, swap, kernel modules, networking, packages, containerd, kubelet, kubeadm, kubectl, `/etc/hosts`, system services)
+- **Ctrl:** Sets up Kubernetes control plane, initializes cluster, sets up kubeconfig, installs Flannel CNI, Helm, and `helm-diff`
+- **Finalization:** Installs MetalLB, NGINX Ingress Controller, Kubernetes Dashboard, Istio, and Prometheus (with custom `ServiceMonitor`)
+- **Node:** Joins worker nodes to the cluster, configures kubeconfig
+
+## Monitoring
+
+Monitoring helps us track the health and performance of our services.  
+We use Prometheus to collect metrics and Grafana to visualize them.  
+This setup makes it easy to spot issues and understand system behavior.
+
+### Prometheus
+
+Prometheus is a monitoring system and time series database.  
+It scrapes metrics from endpoints (e.g., `localhost:8000/metrics`), stores the data, and allows querying with PromQL.
+
+In our project, Prometheus supports model experiments by exposing and collecting metrics for both models.
+
+### Grafana
+
+Grafana is a visualization platform that queries Prometheus and displays metrics in dashboards.  
+We use Grafana to monitor our system and visualize experiment results, including custom UIs for specific needs.
