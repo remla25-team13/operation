@@ -72,7 +72,7 @@ Approved PR: https://github.com/remla25-team13/model-training/pull/6 (related to
 
 -- Evan Handgraaf: --
 Created PR: https://github.com/remla25-team13/model-training/pull/7 (related to A4)
-Approved PR: 
+Approved PR: https://github.com/remla25-team13/model-training/pull/5
 
 -- Rok Stular --
 Created PR: https://github.com/remla25-team13/model-training/pull/8 (related to A4), https://github.com/remla25-team13/app-service/pull/5 (related to A3)
@@ -121,25 +121,3 @@ Approved PR: https://github.com/remla25-team13/model-training/pull/11
 -- Rok Stular --
 Created PR: https://github.com/remla25-team13/app-service/pull/5 (related to A5), https://github.com/remla25-team13/app-service/pull/7 (related to A3)
 Approved PR: https://github.com/remla25-team13/app-service/pull/4
-
-# Week 8:
-
--- Gopal: --
-Created PR:
-Approved PR:
-
--- Petar Petrov: --
-Created PR:
-Approved PR:
-
--- Tijmen Meijer: --
-Created PR: 
-Approved PR: 
-
--- Evan Handgraaf: --
-Created PR: 
-Approved PR: 
-
--- Rok Stular --
-Created PR: 
-Approved PR: 
