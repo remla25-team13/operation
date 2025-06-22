@@ -21,6 +21,7 @@ After reading, you should be able to contribute to design discussions.
     - [Data Flow](#data-flow)
     - [Deployed Resource Types and Relations](#deployed-resource-types-and-relations)
     - [Key Design Considerations](#key-design-considerations)
+    - [Images Overview](#images-overview)
   - [Deployment](#deployment)
     - [Dockerized](#dockerized)
       - [System Overview](#system-overview)
@@ -107,6 +108,8 @@ Machine learning training pipeline for sentiment analysis.
 - Trains and evaluates sentiment model
 - Versions and releases model for deployment
 - DVC pipeline and ML testing
+- Depends on lib-ml for preprocessing
+- Produces a shared Model artifact used by both itself and model-service
 
 ### operation
 
@@ -126,10 +129,13 @@ The diagram above visually represents the described architecture, showing the fl
 - **Application Components:**
   - **app-frontend:** Handles user requests, communicates with `app-service` via REST.
   - **app-service:** Core logic, depends on `lib-version`.
-  - **model-service:** Provides ML features, depends on `lib-ml`.
+  - **model-service:** Provides ML features, depends on `lib-ml` and consumes the shared Model artifact.
+  - **model-training:** Trains and versions the model, depends on `lib-ml`, and produces the shared Model artifact.
 - **Dependencies:**
   - `app-service` → `lib-version`
   - `model-service` → `lib-ml`
+  - `model-training` → `lib-ml`
+  - `model-service` and `model-training` share the Model artifact
 - **Monitoring:**
   - **Prometheus:** Collects metrics from all services.
   - **Grafana:** Visualizes metrics for observability.
@@ -141,8 +147,11 @@ The diagram above visually represents the described architecture, showing the fl
 3. **Service Interaction:**
     - `app-frontend` receives the request, calls `app-service`.
     - `app-service` calls `model-service` for ML tasks.
-4. **Dependencies:** Each service uses its respective library for core logic.
-5. **Metrics:** All services expose metrics, scraped by Prometheus and visualized in Grafana.
+4. **Model Lifecycle:**
+    - `model-training` uses `lib-ml` to preprocess data and train the model.
+    - The trained **Model** artifact is shared with `model-service` for inference.
+5. **Dependencies:** Each service uses its respective library for core logic.
+6. **Metrics:** All services expose metrics, scraped by Prometheus and visualized in Grafana.
 
 ### Deployed Resource Types and Relations
 
@@ -150,12 +159,20 @@ The diagram above visually represents the described architecture, showing the fl
 - **Kubernetes Services:** Expose each deployment internally
 - **Istio Gateway & VirtualService:** Manage ingress and traffic splitting
 - **Prometheus & Grafana:** Monitoring and visualization stack
+- **Shared Model Artifact:** Produced by `model-training`, consumed by `model-service`
 
 ### Key Design Considerations
 
 - **Scalability:** Each component is independently deployable and therefore scalable.
 - **Safe Releases:** Dynamic routing enables gradual rollouts and quick rollback.
-- **Modularity :** New services or dependencies can be added with minimal disruption.
+- **Modularity:** New services or dependencies can be added with minimal disruption.
+
+### Images Overview
+
+- **App Image:**  
+  Contains `app-frontend`, `app-service`, and `lib-version`. Handles user interaction, API logic, and versioning.
+- **Model Image:**  
+  Contains `model-service`, `model-training`, and `lib-ml`. Handles model training, inference, and shared preprocessing logic. The trained model artifact is produced by `model-training` and consumed by `model-service`.
 
 ## Deployment
 
@@ -186,6 +203,7 @@ Three Dockerized services orchestrated via Docker Compose:
 3. **model-service**
    - ML model service
    - **Image:** `ghcr.io/remla25-team13/model-service:latest`
+   - **Depends on:** shared Model artifact, lib-ml
    - **Environment Variables:**
      - `VERSION` — Model version
      - `MODE` — Set to `PROD`
