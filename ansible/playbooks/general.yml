@@ -97,12 +97,12 @@
       ansible.builtin.shell:
         cmd: containerd config default > /etc/containerd/config.toml
 
-    - name: Remove apparmor from containerd config
+    - name: Disable apparmor in containerd config
       ansible.builtin.lineinfile:
         path: "/etc/containerd/config.toml"
         state: present
-        regexp: "    disable_apparmor = true"
-        line: "    disable_apparmor = false"
+        regexp: "    disable_apparmor = false"
+        line: "    disable_apparmor = true"
 
     - name: Change the default pause sandbox image in containerd config
       ansible.builtin.lineinfile:
