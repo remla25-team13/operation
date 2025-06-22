@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Values.prefix }}-app-config
+  name: {{ include "sentiment-chart.fullname" . }}-app-config
 data:
-  MODEL_SERVICE_URL_A: {{ .Values.appService.modelServiceUrlA | quote }}
-  MODEL_SERVICE_URL_B: {{ .Values.appService.modelServiceUrlB | quote }}
+  MODEL_SERVICE_URL_A: {{ .Values.appService.modelServiceUrlGauss | quote }}
+  MODEL_SERVICE_URL_B: {{ .Values.appService.modelServiceUrlMulti | quote }}
