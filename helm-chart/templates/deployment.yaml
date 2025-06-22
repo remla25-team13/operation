@@ -50,6 +50,11 @@ spec:
           value: {{ .Values.appService.modelServiceUrlGauss }}
         - name: MODEL_TYPE
           value: gauss
+        - name: GDRIVE_CREDENTIALS_DATA
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.prefix }}-gdrive-credentials
+              key: token
 
 ---
 apiVersion: apps/v1
@@ -79,6 +84,11 @@ spec:
           value: {{ .Values.appService.modelServiceUrlMulti }}
         - name: MODEL_TYPE
           value: multi
+        - name: GDRIVE_CREDENTIALS_DATA
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.prefix }}-gdrive-credentials
+              key: token
 
 ---
 apiVersion: apps/v1

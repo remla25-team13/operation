@@ -1,3 +1,4 @@
 .vagrant/
 ansible/playbooks/kubeconfig/
 .DS_Store
+.gdrive-credentials.json
