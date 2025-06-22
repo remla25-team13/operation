@@ -15,5 +15,4 @@ modelService:
   image: ghcr.io/remla25-team13/model-service:latest
   portA: 5000
   portB: 5001
-  version: v1.2.0
   mode: PROD
