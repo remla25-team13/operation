@@ -2,18 +2,19 @@ prefix: team13
 
 appFrontend:
   image: ghcr.io/remla25-team13/app-frontend:latest
-  port: 4200
+  host: app.local
+  port: 80
 
 appService:
+  host: app-service.local
   image: ghcr.io/remla25-team13/app-service:latest
-  modelServiceUrlA: "http://team13-model-service:5000"
-  modelServiceUrlB: "http://team13-model-service:5001"
+  modelServiceUrlGauss: "http://team13-model-service-gauss"
+  modelServiceUrlMulti: "http://team13-model-service-multi"
   servicePort: 80
-  containerPort: 8080
+  containerPort: 5000
 
 modelService:
   image: ghcr.io/remla25-team13/model-service:latest
-  portA: 5000
-  portB: 5001
+  port: 80
   version: v1.2.0
   mode: PROD
