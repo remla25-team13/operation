@@ -180,6 +180,6 @@
 
     - name: Wait for Istio ingress gateway to become ready
       shell: |
-        kubectl wait --namespace istio-system --for=condition=Available deployment istio-ingress-gateway --timeout=300s
+        kubectl wait --namespace istio-system --for=condition=Available deployment istio-ingressgateway --timeout=300s
       register: istio_ingress_wait
       failed_when: istio_ingress_wait.rc != 0
