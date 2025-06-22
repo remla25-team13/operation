@@ -81,6 +81,7 @@
       kubernetes.core.helm_repository:
         name: kubernetes-dashboard
         repo_url: https://kubernetes.github.io/dashboard/
+        state: present
 
     - name: Install kubernetes-dashboard Helm chart
       kubernetes.core.helm:
@@ -108,6 +109,7 @@
     - name: Wait for NGINX ingress controller to become ready
       shell: |
         kubectl wait --namespace ingress-nginx \
+          --all \
           --for=condition=Ready pod \
           --selector=app.kubernetes.io/component=controller \
           --timeout=90s
@@ -142,37 +144,39 @@
         
 
     # Step 23: Install Istio
-    - name: Add istio helm repository
-      kubernetes.core.helm_repository:
-        name: istio
-        repo_url: https://istio-release.storage.googleapis.com/charts
-    
-    - name: Install Istio base chart (version 1.26.0)
-      kubernetes.core.helm:
-        name: istio-base
-        chart_ref: istio/base
-        release_namespace: istio-system
-        create_namespace: true
-        chart_version: 1.26.0
-        release_state: present
+    - name: Download Istio-1.25.2 and unpack it
+      ansible.builtin.unarchive:
+        src: https://github.com/istio/istio/releases/download/1.25.2/istio-1.25.2-linux-amd64.tar.gz
+        dest: /usr/local/bin
+        remote_src: yes
 
-    - name: Install Istio discovery chart (version 1.26.0)
-      kubernetes.core.helm:
-        name: istiod
-        chart_ref: istio/istiod
-        release_namespace: istio-system
-        create_namespace: true
-        chart_version: 1.26.0
-        release_state: present
+    - name: Add the istioctl binary to the PATH variable
+      ansible.builtin.copy:
+        src: /usr/local/bin/istio-1.25.2/bin/istioctl
+        dest: /usr/local/bin/istioctl
+        remote_src: yes
+        mode: "0755"
 
-    - name: Install Istio ingress gateway chart (version 1.26.0)
-      kubernetes.core.helm:
-        name: istio-ingress-gateway
-        chart_ref: istio/gateway
-        release_namespace: istio-system
-        create_namespace: true
-        chart_version: 1.26.0
-        release_state: present
+    - name: IstioOperator
+      ansible.builtin.copy:
+        content: |
+          apiVersion: install.istio.io/v1alpha1
+          kind: IstioOperator
+          spec:
+            components:
+              ingressGateways:
+              - name: istio-ingressgateway
+                enabled: true
+                k8s:
+                  service:
+                    loadBalancerIP: 192.168.56.91
+        dest: config.yml
+
+    - name: Install Istio
+      ansible.builtin.shell: istioctl install -y -f config.yml
+
+    - name: Enable Istio
+      ansible.builtin.shell: kubectl label ns default istio-injection=enabled
 
     - name: Wait for Istio ingress gateway to become ready
       shell: |

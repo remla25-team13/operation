@@ -83,18 +83,13 @@
         state: present
         update_cache: true
 
-    - name: Install a list of packages
+    - name: Install helm
       ansible.builtin.apt:
         state: present
         pkg:
         - helm
 
-    - name: Check if helm-diff plugin is already installed
-      command: helm plugin list
-      register: helm_plugins
-      failed_when: helm_plugins.rc > 1
-      changed_when: "'diff\t' not in helm_plugins.stdout"
-
     - name: Install helm-diff plugin
-      command: helm plugin install https://github.com/databus23/helm-diff
-      when: "'diff\t' not in helm_plugins.stdout"
+      kubernetes.core.helm_plugin:
+        plugin_path: https://github.com/databus23/helm-diff
+        state: present
