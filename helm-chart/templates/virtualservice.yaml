@@ -1,21 +1,21 @@
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: {{ .Values.prefix }}-app-frontend
+  name: {{ .Values.prefix }}-app-service
 spec:
   hosts:
-    - "*"
+    - {{ .Values.appService.host }}
   gateways:
     - {{ .Values.prefix }}-istio-ingressgateway
   http:
     - route:
         - destination:
             host: {{ .Values.prefix }}-app-service
-            subset: v1
+            subset: multi
           weight: 90
         - destination:
             host: {{ .Values.prefix }}-app-service
-            subset: v2
+            subset: gauss
           weight: 10
 
 ---
@@ -26,15 +26,30 @@ metadata:
 spec:
   host: {{ .Values.prefix }}-app-service
   subsets:
-    - name: v1
+    - name: multi
       labels:
-        version: v1
-    - name: v2
+        version: multi
+    - name: gauss
       labels:
-        version: v2
+        version: gauss
   trafficPolicy:
     loadBalancer:
       consistentHash:
         httpCookie:
           name: user
           ttl: 0s
+
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .Values.prefix }}-app-frontend
+spec:
+  hosts:
+    - {{ .Values.appFrontend.host }}
+  gateways:
+    - {{ .Values.prefix }}-istio-ingressgateway
+  http:
+    - route:
+        - destination:
+            host: {{ .Values.prefix }}-app-frontend

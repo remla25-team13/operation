@@ -41,9 +41,7 @@ Vagrant.configure("2") do |config|
     ctrl.vm.box = "bento/ubuntu-24.04"
 
     #Set network settings
-    ctrl.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
     ctrl.vm.network "private_network", ip: get_node_ip(0)
-    ctrl.vm.network "forwarded_port", guest: 22, host: 22
     #Set virtualbox settings
     ctrl.vm.provider "virtualbox" do |v|
       v.memory = CORE_MEM
@@ -77,7 +75,6 @@ Vagrant.configure("2") do |config|
       node.vm.box = "bento/ubuntu-24.04"
 
       #Network
-      node.vm.network "forwarded_port", guest: "8#{i}", host: "808#{i}" , host_ip: "127.0.0.1"
       node.vm.network "private_network", ip: get_node_ip(i)
 
       #Set virtualbox settings

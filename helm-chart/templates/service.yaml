@@ -31,6 +31,7 @@ spec:
       targetPort: {{ .Values.appService.containerPort }}
   type: ClusterIP
 
+
 ---
 apiVersion: v1
 kind: Service
@@ -39,11 +40,11 @@ metadata:
 spec:
   selector:
     app: {{ .Values.prefix }}-model-service
-    version: v1
+    version: gauss
   ports:
     - protocol: TCP
-      port: {{ .Values.modelService.portA }}
-      targetPort: {{ .Values.modelService.portA }}
+      port: {{ .Values.modelService.port }}
+      targetPort: {{ .Values.modelService.port }}
   type: ClusterIP
 
 
@@ -55,9 +56,9 @@ metadata:
 spec:
   selector:
     app: {{ .Values.prefix }}-model-service
-    version: v2
+    version: multi
   ports:
     - protocol: TCP
-      port: {{ .Values.modelService.portB }}
-      targetPort: {{ .Values.modelService.portB }}
+      port: {{ .Values.modelService.port }}
+      targetPort: {{ .Values.modelService.port }}
   type: ClusterIP

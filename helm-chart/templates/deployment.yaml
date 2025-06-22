@@ -16,6 +16,9 @@ spec:
       containers:
       - name: {{ .Values.prefix }}-app-frontend
         image: {{ .Values.appFrontend.image }}
+        env:
+        - name: API_HOST
+          value: http://{{ .Values.appService.host }}
         ports:
         - containerPort: {{ .Values.appFrontend.port }}
 
@@ -23,70 +26,89 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.prefix }}-app-service-v1
+  name: {{ .Values.prefix }}-app-service-gauss
+  labels:
+    app: {{ .Values.prefix }}-app-service
+    version: gauss
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: {{ .Values.prefix }}-app-service
-      version: v1
+      version: gauss
   template:
     metadata:
       labels:
         app: {{ .Values.prefix }}-app-service
-        version: v1
+        version: gauss
     spec:
       containers:
       - name: {{ .Values.prefix }}-app-service
         image: {{ .Values.appService.image }}
         env:
-        - name: MODEL_SERVICE_URL_A
-          value: {{ .Values.appService.modelServiceUrlA }}
-        - name: MODEL_SERVICE_URL_B
-          value: {{ .Values.appService.modelServiceUrlB }}
+        - name: MODEL_SERVICE_URL
+          value: {{ .Values.appService.modelServiceUrlGauss }}
+        - name: MODEL_TYPE
+          value: gauss
+        - name: GDRIVE_CREDENTIALS_DATA
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.prefix }}-gdrive-credentials
+              key: token
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.prefix }}-app-service-v2
+  name: {{ .Values.prefix }}-app-service-multi
+  labels:
+    app: {{ .Values.prefix }}-app-service
+    version: multi
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: {{ .Values.prefix }}-app-service
-      version: v2
+      version: multi
   template:
     metadata:
       labels:
         app: {{ .Values.prefix }}-app-service
-        version: v2
+        version: multi
     spec:
       containers:
       - name: {{ .Values.prefix }}-app-service
         image: {{ .Values.appService.image }}
         env:
-        - name: MODEL_SERVICE_URL_A
-          value: {{ .Values.appService.modelServiceUrlA }}
-        - name: MODEL_SERVICE_URL_B
-          value: {{ .Values.appService.modelServiceUrlB }}
+        - name: MODEL_SERVICE_URL
+          value: {{ .Values.appService.modelServiceUrlMulti }}
+        - name: MODEL_TYPE
+          value: multi
+        - name: GDRIVE_CREDENTIALS_DATA
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.prefix }}-gdrive-credentials
+              key: token
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Values.prefix }}-model-service-gauss
+  labels:
+    app: {{ .Values.prefix }}-model-service
+    version: gauss
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: {{ .Values.prefix }}-model-service
-      version: v1
+      version: gauss
   template:
     metadata:
       labels:
         app: {{ .Values.prefix }}-model-service
-        version: v1
+        version: gauss
     spec:
       containers:
       - name: {{ .Values.prefix }}-model-service-gauss
@@ -97,27 +119,30 @@ spec:
         - name: MODE
           value: "{{ .Values.modelService.mode }}"
         - name: PORT
-          value: "{{ .Values.modelService.portA }}"
+          value: "{{ .Values.modelService.port }}"
         - name: MODEL_TYPE
           value: "gauss"
         ports:
-        - containerPort: {{ .Values.modelService.portA }}
+        - containerPort: {{ .Values.modelService.port }}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Values.prefix }}-model-service-multi
+  labels:
+    app: {{ .Values.prefix }}-model-service
+    version: multi
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: {{ .Values.prefix }}-model-service
-      version: v2
+      version: multi
   template:
     metadata:
       labels:
         app: {{ .Values.prefix }}-model-service
-        version: v2
+        version: multi
     spec:
       containers:
       - name: {{ .Values.prefix }}-model-service-multi
@@ -128,8 +153,8 @@ spec:
         - name: MODE
           value: "{{ .Values.modelService.mode }}"
         - name: PORT
-          value: "{{ .Values.modelService.portB }}"
+          value: "{{ .Values.modelService.port }}"
         - name: MODEL_TYPE
           value: "multi"
         ports:
-        - containerPort: {{ .Values.modelService.portB }}
+        - containerPort: {{ .Values.modelService.port }}
