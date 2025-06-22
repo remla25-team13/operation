@@ -144,15 +144,15 @@
         
 
     # Step 23: Install Istio
-    - name: Download Istio-1.25.2 and unpack it
-      ansible.builtin.unarchive:
-        src: https://github.com/istio/istio/releases/download/1.25.2/istio-1.25.2-linux-amd64.tar.gz
-        dest: /usr/local/bin
+    - name: Download Istio-1.26.0 and unpack it
+      unarchive:
+        src: https://github.com/istio/istio/releases/download/1.26.0/istio-1.26.0-linux-amd64.tar.gz
+        dest: /tmp
         remote_src: yes
 
     - name: Add the istioctl binary to the PATH variable
       ansible.builtin.copy:
-        src: /usr/local/bin/istio-1.25.2/bin/istioctl
+        src: /tmp/istio-1.26.0/bin/istioctl
         dest: /usr/local/bin/istioctl
         remote_src: yes
         mode: "0755"
