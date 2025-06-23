@@ -41,10 +41,16 @@ spec:
       labels:
         app: {{ include "sentiment-chart.fullname" . }}-app-service
         version: gauss
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "{{ .Values.appService.containerPort }}"
+        prometheus.io/path: /metrics
     spec:
       containers:
       - name: {{ include "sentiment-chart.fullname" . }}-app-service
         image: {{ .Values.appService.image }}
+        ports:
+        - containerPort: {{ .Values.appService.containerPort }}
         env:
         - name: MODEL_SERVICE_URL
           value: {{ .Values.appService.modelServiceUrlGauss | default (printf "http://%s-model-service-gauss" (include "sentiment-chart.fullname" .)) }}
@@ -75,6 +81,10 @@ spec:
       labels:
         app: {{ include "sentiment-chart.fullname" . }}-app-service
         version: multi
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /metrics
+        prometheus.io/port: "{{ .Values.appService.containerPort }}"
     spec:
       containers:
       - name: {{ include "sentiment-chart.fullname" . }}-app-service

@@ -112,7 +112,7 @@
           --all \
           --for=condition=Ready pod \
           --selector=app.kubernetes.io/component=controller \
-          --timeout=90s
+          --timeout=300s
       register: nginx_wait_result
       failed_when: nginx_wait_result.rc != 0
 
