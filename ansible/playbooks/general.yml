@@ -73,10 +73,6 @@
         state: present
         update_cache: true
 
-    - name: Update APT cache
-      ansible.builtin.apt:
-        update_cache: true
-
     - name: Install required APT packages
       ansible.builtin.apt:
         pkg:

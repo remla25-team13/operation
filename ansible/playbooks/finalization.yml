@@ -144,9 +144,24 @@
         
 
     # Step 23: Install Istio
+    - name: Set istio download URL for x86_64 architecture
+      set_fact:
+        istio_download_url: https://github.com/istio/istio/releases/download/1.26.0/istio-1.26.0-linux-amd64.tar.gz
+      when: ansible_architecture == "x86_64"
+
+    - name: Set istio download URL for aarch64 architecture
+      set_fact:
+        istio_download_url: https://github.com/istio/istio/releases/download/1.26.0/istio-1.26.0-linux-arm64.tar.gz
+      when: ansible_architecture == "aarch64"
+
+    - name: Fail if architecture is not supported
+      fail:
+        msg: "Unsupported architecture: {{ ansible_architecture }}. Supported architectures are x86_64 and aarch64. Playbook update may be required."
+      when: istio_download_url is not defined
+
     - name: Download Istio-1.26.0 and unpack it
       unarchive:
-        src: https://github.com/istio/istio/releases/download/1.26.0/istio-1.26.0-linux-amd64.tar.gz
+        src: "{{ istio_download_url }}"
         dest: /tmp
         remote_src: yes
 
