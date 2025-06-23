@@ -99,6 +99,7 @@ helm install helm-chart/ --generate-name
 
 # /etc/hosts
 192.168.56.90 dashboard.local grafana.local prometheus.local
+192.168.56.91 app.local
 
 kubectl -n kubernetes-dashboard create token admin-user
 

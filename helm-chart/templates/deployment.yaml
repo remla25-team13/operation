@@ -18,7 +18,10 @@ spec:
         image: {{ .Values.appFrontend.image }}
         env:
         - name: API_HOST
-          value: http://{{ .Values.appFrontend.host }}/api
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "sentiment-chart.fullname" . }}-app-frontend-config
+              key: apiHost
         ports:
         - containerPort: {{ .Values.appFrontend.port }}
 
