@@ -4,11 +4,17 @@ metadata:
   name: {{ include "sentiment-chart.fullname" . }}-app-service
 spec:
   hosts:
-    - {{ .Values.appService.host }}
+    - {{ .Values.appFrontend.host }}
   gateways:
     - {{ include "sentiment-chart.fullname" . }}-istio-ingressgateway
   http:
-    - route:
+    - name: service-access
+      match:
+        - uri:
+            prefix: /api/
+      rewrite:
+        uri: /
+      route:
         - destination:
             host: {{ include "sentiment-chart.fullname" . }}-app-service
             subset: multi
@@ -17,6 +23,10 @@ spec:
             host: {{ include "sentiment-chart.fullname" . }}-app-service
             subset: gauss
           weight: 10
+    - name: frontend-access
+      route:
+        - destination:
+            host: {{ include "sentiment-chart.fullname" . }}-app-frontend
 
 ---
 apiVersion: networking.istio.io/v1beta1
@@ -38,18 +48,3 @@ spec:
         httpCookie:
           name: X-Backend-Token
           ttl: 0s
-
----
-apiVersion: networking.istio.io/v1beta1
-kind: VirtualService
-metadata:
-  name: {{ include "sentiment-chart.fullname" . }}-app-frontend
-spec:
-  hosts:
-    - {{ .Values.appFrontend.host }}
-  gateways:
-    - {{ include "sentiment-chart.fullname" . }}-istio-ingressgateway
-  http:
-    - route:
-        - destination:
-            host: {{ include "sentiment-chart.fullname" . }}-app-frontend

@@ -18,7 +18,7 @@ spec:
         image: {{ .Values.appFrontend.image }}
         env:
         - name: API_HOST
-          value: http://{{ .Values.appService.host }}
+          value: http://{{ .Values.appFrontend.host }}/api
         ports:
         - containerPort: {{ .Values.appFrontend.port }}
 
