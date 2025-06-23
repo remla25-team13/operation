@@ -41,10 +41,16 @@ spec:
       labels:
         app: {{ .Values.prefix }}-app-service
         version: gauss
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "{{ .Values.appService.containerPort }}"
+        prometheus.io/path: /metrics
     spec:
       containers:
       - name: {{ .Values.prefix }}-app-service
         image: {{ .Values.appService.image }}
+        ports:
+        - containerPort: {{ .Values.appService.containerPort }}
         env:
         - name: MODEL_SERVICE_URL
           value: {{ .Values.appService.modelServiceUrlGauss }}
@@ -75,6 +81,10 @@ spec:
       labels:
         app: {{ .Values.prefix }}-app-service
         version: multi
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /metrics
+        prometheus.io/port: "{{ .Values.appService.containerPort }}"
     spec:
       containers:
       - name: {{ .Values.prefix }}-app-service

@@ -53,7 +53,7 @@
           net.bridge.bridge-nf-call-iptables: 1
           net.bridge.bridge-nf-call-ip6tables: 1
 
-    - name: (step 8 1/1) set host IPs #could be done dynamically for extra points
+    - name: (step 8 1/1) Populate the hosts file
       template:
         src: ../templates/hosts.j2
         dest: /etc/hosts
@@ -61,13 +61,13 @@
         group: root
         mode: "0644"
 
-    - name: (step 9) add kubernetes key
+    - name: (step 9) Add Kubernetes APT keyring
       ansible.builtin.apt_key:
         url: https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key
         keyring: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
         state: present
 
-    - name: Kubernetes to list
+    - name: Add kubernetes APT repository
       ansible.builtin.apt_repository:
         repo: deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /
         state: present
@@ -77,8 +77,7 @@
       ansible.builtin.apt:
         update_cache: true
 
-    # cant get specific versions containerd=1.7.24 working would appreciate if someone could take a look
-    - name: Install a list of packages
+    - name: Install required APT packages
       ansible.builtin.apt:
         pkg:
           - "containerd=1.7.24-*"
@@ -118,12 +117,12 @@
         regexp: "            SystemdCgroup = false"
         line: "            SystemdCgroup = true"
 
-    - name: Restart service containerd, in all cases
+    - name: Restart containerd service
       ansible.builtin.service:
         name: containerd
         state: restarted
 
-    - name: start kubelet
+    - name: Start kubelet service and enable it
       ansible.builtin.systemd:
         name: kubelet
         enabled: true
