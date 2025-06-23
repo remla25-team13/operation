@@ -157,11 +157,11 @@
     - name: Fail if architecture is not supported
       fail:
         msg: "Unsupported architecture: {{ ansible_architecture }}. Supported architectures are x86_64 and aarch64. Playbook update may be required."
-      when: download_url is not defined
+      when: istio_download_url is not defined
 
     - name: Download Istio-1.26.0 and unpack it
       unarchive:
-        src: {{ istio_download_url }}
+        src: "{{ istio_download_url }}"
         dest: /tmp
         remote_src: yes
 
