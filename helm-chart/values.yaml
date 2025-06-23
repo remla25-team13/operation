@@ -1,20 +1,18 @@
-prefix: team13
-
 appFrontend:
   image: ghcr.io/remla25-team13/app-frontend:latest
   host: app.local
   port: 80
+  replicas: 1
 
 appService:
-  host: app-service.local
   image: ghcr.io/remla25-team13/app-service:latest
-  modelServiceUrlGauss: "http://team13-model-service-gauss"
-  modelServiceUrlMulti: "http://team13-model-service-multi"
   servicePort: 80
   containerPort: 5000
+  replicas: 2
 
 modelService:
   image: ghcr.io/remla25-team13/model-service:latest
   port: 80
   version: v1.2.0
   mode: PROD
+  replicas: 2

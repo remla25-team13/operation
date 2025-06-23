@@ -2,23 +2,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.prefix }}-app-frontend
+  name: {{ include "sentiment-chart.fullname" . }}-app-frontend
 spec:
-  replicas: 1
+  replicas: {{ .Values.appFrontend.replicas }}
   selector:
     matchLabels:
-      app: {{ .Values.prefix }}-app-frontend
+      app: {{ include "sentiment-chart.fullname" . }}-app-frontend
   template:
     metadata:
       labels:
-        app: {{ .Values.prefix }}-app-frontend
+        app: {{ include "sentiment-chart.fullname" . }}-app-frontend
     spec:
       containers:
-      - name: {{ .Values.prefix }}-app-frontend
+      - name: {{ include "sentiment-chart.fullname" . }}-app-frontend
         image: {{ .Values.appFrontend.image }}
         env:
         - name: API_HOST
-          value: http://{{ .Values.appService.host }}
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "sentiment-chart.fullname" . }}-app-frontend-config
+              key: apiHost
         ports:
         - containerPort: {{ .Values.appFrontend.port }}
 
@@ -26,20 +29,20 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.prefix }}-app-service-gauss
+  name: {{ include "sentiment-chart.fullname" . }}-app-service-gauss
   labels:
-    app: {{ .Values.prefix }}-app-service
+    app: {{ include "sentiment-chart.fullname" . }}-app-service
     version: gauss
 spec:
-  replicas: 1
+  replicas: {{ .Values.appService.replicas }}
   selector:
     matchLabels:
-      app: {{ .Values.prefix }}-app-service
+      app: {{ include "sentiment-chart.fullname" . }}-app-service
       version: gauss
   template:
     metadata:
       labels:
-        app: {{ .Values.prefix }}-app-service
+        app: {{ include "sentiment-chart.fullname" . }}-app-service
         version: gauss
       annotations:
         prometheus.io/scrape: "true"
@@ -47,39 +50,39 @@ spec:
         prometheus.io/path: /metrics
     spec:
       containers:
-      - name: {{ .Values.prefix }}-app-service
+      - name: {{ include "sentiment-chart.fullname" . }}-app-service
         image: {{ .Values.appService.image }}
         ports:
         - containerPort: {{ .Values.appService.containerPort }}
         env:
         - name: MODEL_SERVICE_URL
-          value: {{ .Values.appService.modelServiceUrlGauss }}
+          value: {{ .Values.appService.modelServiceUrlGauss | default (printf "http://%s-model-service-gauss" (include "sentiment-chart.fullname" .)) }}
         - name: MODEL_TYPE
           value: gauss
         - name: GDRIVE_CREDENTIALS_DATA
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.prefix }}-gdrive-credentials
+              name: {{ include "sentiment-chart.fullname" . }}-gdrive-credentials
               key: token
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.prefix }}-app-service-multi
+  name: {{ include "sentiment-chart.fullname" . }}-app-service-multi
   labels:
-    app: {{ .Values.prefix }}-app-service
+    app: {{ include "sentiment-chart.fullname" . }}-app-service
     version: multi
 spec:
-  replicas: 1
+  replicas: {{ .Values.appService.replicas }}
   selector:
     matchLabels:
-      app: {{ .Values.prefix }}-app-service
+      app: {{ include "sentiment-chart.fullname" . }}-app-service
       version: multi
   template:
     metadata:
       labels:
-        app: {{ .Values.prefix }}-app-service
+        app: {{ include "sentiment-chart.fullname" . }}-app-service
         version: multi
       annotations:
         prometheus.io/scrape: "true"
@@ -87,41 +90,41 @@ spec:
         prometheus.io/port: "{{ .Values.appService.containerPort }}"
     spec:
       containers:
-      - name: {{ .Values.prefix }}-app-service
+      - name: {{ include "sentiment-chart.fullname" . }}-app-service
         image: {{ .Values.appService.image }}
         env:
         - name: MODEL_SERVICE_URL
-          value: {{ .Values.appService.modelServiceUrlMulti }}
+          value: {{ .Values.appService.modelServiceUrlMulti | default (printf "http://%s-model-service-multi" (include "sentiment-chart.fullname" .)) }}
         - name: MODEL_TYPE
           value: multi
         - name: GDRIVE_CREDENTIALS_DATA
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.prefix }}-gdrive-credentials
+              name: {{ include "sentiment-chart.fullname" . }}-gdrive-credentials
               key: token
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.prefix }}-model-service-gauss
+  name: {{ include "sentiment-chart.fullname" . }}-model-service-gauss
   labels:
-    app: {{ .Values.prefix }}-model-service
+    app: {{ include "sentiment-chart.fullname" . }}-model-service
     version: gauss
 spec:
-  replicas: 1
+  replicas: {{ .Values.modelService.replicas }}
   selector:
     matchLabels:
-      app: {{ .Values.prefix }}-model-service
+      app: {{ include "sentiment-chart.fullname" . }}-model-service
       version: gauss
   template:
     metadata:
       labels:
-        app: {{ .Values.prefix }}-model-service
+        app: {{ include "sentiment-chart.fullname" . }}-model-service
         version: gauss
     spec:
       containers:
-      - name: {{ .Values.prefix }}-model-service-gauss
+      - name: {{ include "sentiment-chart.fullname" . }}-model-service-gauss
         image: {{ .Values.modelService.image }}
         env:
         - name: VERSION
@@ -138,24 +141,24 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.prefix }}-model-service-multi
+  name: {{ include "sentiment-chart.fullname" . }}-model-service-multi
   labels:
-    app: {{ .Values.prefix }}-model-service
+    app: {{ include "sentiment-chart.fullname" . }}-model-service
     version: multi
 spec:
-  replicas: 1
+  replicas: {{ .Values.modelService.replicas }}
   selector:
     matchLabels:
-      app: {{ .Values.prefix }}-model-service
+      app: {{ include "sentiment-chart.fullname" . }}-model-service
       version: multi
   template:
     metadata:
       labels:
-        app: {{ .Values.prefix }}-model-service
+        app: {{ include "sentiment-chart.fullname" . }}-model-service
         version: multi
     spec:
       containers:
-      - name: {{ .Values.prefix }}-model-service-multi
+      - name: {{ include "sentiment-chart.fullname" . }}-model-service-multi
         image: {{ .Values.modelService.image }}
         env:
         - name: VERSION

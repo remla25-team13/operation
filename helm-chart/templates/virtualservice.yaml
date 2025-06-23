@@ -1,30 +1,40 @@
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: {{ .Values.prefix }}-app-service
+  name: {{ include "sentiment-chart.fullname" . }}-app-service
 spec:
   hosts:
-    - {{ .Values.appService.host }}
+    - {{ .Values.appFrontend.host }}
   gateways:
-    - {{ .Values.prefix }}-istio-ingressgateway
+    - {{ include "sentiment-chart.fullname" . }}-istio-ingressgateway
   http:
-    - route:
+    - name: service-access
+      match:
+        - uri:
+            prefix: /api/
+      rewrite:
+        uri: /
+      route:
         - destination:
-            host: {{ .Values.prefix }}-app-service
+            host: {{ include "sentiment-chart.fullname" . }}-app-service
             subset: multi
           weight: 90
         - destination:
-            host: {{ .Values.prefix }}-app-service
+            host: {{ include "sentiment-chart.fullname" . }}-app-service
             subset: gauss
           weight: 10
+    - name: frontend-access
+      route:
+        - destination:
+            host: {{ include "sentiment-chart.fullname" . }}-app-frontend
 
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
-  name: {{ .Values.prefix }}-app-service
+  name: {{ include "sentiment-chart.fullname" . }}-app-service
 spec:
-  host: {{ .Values.prefix }}-app-service
+  host: {{ include "sentiment-chart.fullname" . }}-app-service
   subsets:
     - name: multi
       labels:
@@ -36,20 +46,5 @@ spec:
     loadBalancer:
       consistentHash:
         httpCookie:
-          name: user
+          name: X-Backend-Token
           ttl: 0s
-
----
-apiVersion: networking.istio.io/v1beta1
-kind: VirtualService
-metadata:
-  name: {{ .Values.prefix }}-app-frontend
-spec:
-  hosts:
-    - {{ .Values.appFrontend.host }}
-  gateways:
-    - {{ .Values.prefix }}-istio-ingressgateway
-  http:
-    - route:
-        - destination:
-            host: {{ .Values.prefix }}-app-frontend
