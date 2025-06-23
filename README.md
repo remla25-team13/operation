@@ -105,3 +105,9 @@ kubectl -n kubernetes-dashboard create token admin-user
 
 vagrant destroy -f
 ```
+
+Do not forget the .gdrive-credentials.json in helm-chart folder
+
+prom:
+admin
+prom-admin
