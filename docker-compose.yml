@@ -10,6 +10,7 @@ services:
   app-service:
     image: ghcr.io/remla25-team13/app-service:latest
     environment:
+      - MODEL_TYPE=gauss
       - MODEL_SERVICE_URL=http://model-service:${MODEL_SERVICE_PORT}
     container_name: app-service
     secrets:
