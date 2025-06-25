@@ -2,7 +2,7 @@ services:
   app-frontend:
     image: ghcr.io/remla25-team13/app-frontend:latest
     ports: 
-      - 4200:4200
+      - 4200:80
     container_name: app-frontend
     depends_on:
       - app-service
