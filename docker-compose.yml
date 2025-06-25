@@ -4,6 +4,7 @@ services:
     ports: 
       - 4200:4200
     container_name: app-frontend
+    restart: on-failure
     depends_on:
       - app-service
 
@@ -12,6 +13,7 @@ services:
     environment:
       - MODEL_SERVICE_URL=http://model-service:${MODEL_SERVICE_PORT}
     container_name: app-service
+    restart: on-failure
     secrets:
       - auth_token
 
@@ -24,6 +26,7 @@ services:
     ports:
     - "${MODEL_SERVICE_PORT}:${MODEL_SERVICE_PORT}"
     container_name: model-service
+    restart: on-failure
     secrets:
       - auth_token
 
