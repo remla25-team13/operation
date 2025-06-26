@@ -26,7 +26,7 @@ services:
   model-service:
     image: ghcr.io/remla25-team13/model-service:latest
     environment:
-      - VERSION=v0.1.0
+      - ARTIFACT_VERSION=v1.3.3
       - MODE=PROD
       - PORT=${MODEL_SERVICE_PORT}
     ports:
