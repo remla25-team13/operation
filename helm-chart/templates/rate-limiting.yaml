@@ -10,7 +10,7 @@ data:
         value: "api"
         rate_limit:
           unit: minute
-          requests_per_unit: 100
+          requests_per_unit: {{ .Values.appService.ratelimit.submit | default 100 }}
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
