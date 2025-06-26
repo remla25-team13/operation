@@ -8,7 +8,7 @@ spec:
   gateways:
     - {{ include "sentiment-chart.fullname" . }}-istio-ingressgateway
   http:
-    - name: service-access
+    - name: api
       match:
         - uri:
             prefix: /api/
