@@ -9,6 +9,8 @@ appService:
   servicePort: 80
   containerPort: 5000
   replicas: 2
+  ratelimit:
+    submit: 100
 
 modelService:
   image: ghcr.io/remla25-team13/model-service:latest
