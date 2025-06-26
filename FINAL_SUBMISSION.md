@@ -48,7 +48,7 @@ grafana (default credentials):
 ### Grafana
 
 1. In Grafana, click **+ > Import**.
-2. Upload `grafana/dashboards/k8-dashboard.json` from this repository.
+2. Upload `grafana/dashboards/team13.json` from this repository.
 3. Select your Prometheus data source and click **Import**.
 
 ## How to run the code with docker
