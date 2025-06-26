@@ -72,3 +72,5 @@ Also check the README of every repository for more specific information.
 - model-training - https://github.com/remla25-team13/model-training
 - lib-ml - https://github.com/remla25-team13/lib-ml
 - lib-version - https://github.com/remla25-team13/lib-version
+
+We recommend to read the model-training README.
