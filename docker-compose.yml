@@ -17,9 +17,9 @@ services:
       - GDRIVE_CREDENTIALS_DATA=${GDRIVE_CREDENTIALS}
       - MODEL_SERVICE_URL=http://model-service:${MODEL_SERVICE_PORT}
     container_name: app-service
-    volumes:
-      - ./logs:/app/logs
     restart: on-failure
+    depends_on:
+      - model-service
     secrets:
       - auth_token
 
@@ -35,6 +35,8 @@ services:
     restart: on-failure
     secrets:
       - auth_token
+    volumes:
+      - ./ml-models-docker:/root/output
 
 secrets:
   auth_token:
