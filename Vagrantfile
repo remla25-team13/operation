@@ -33,6 +33,8 @@ ansible_groups = {
 #Vagrant configuration 
 Vagrant.configure("2") do |config|
 
+  config.vm.synced_folder "./shared", "/mnt/shared", create: true
+
   #Configure control node
   config.vm.define "ctrl" do |ctrl|
     ctrl.vm.hostname = "ctrl"

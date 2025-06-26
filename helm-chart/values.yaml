@@ -7,6 +7,8 @@ appFrontend:
 appService:
   image: ghcr.io/remla25-team13/app-service:latest
   servicePort: 80
+  #modelServiceUrlGauss: some_hostname
+  #modelServiceUrlMulti: some_hostname
   containerPort: 5000
   replicas: 2
   ratelimit:
