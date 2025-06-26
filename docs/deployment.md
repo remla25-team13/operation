@@ -203,8 +203,8 @@ To handle incoming traffic, we rely on Istio as our service mesh. The key compon
 - Istio Ingress Gateway: Acts as the unified entry point for all external requests.
 - VirtualService: Routes requests from the gateway to internal services such as app-service and app-frontend, based on path and headers.
 - DestinationRule: Controls how requests are distributed among the app-service pods. This includes:
-- A 90/10 traffic split between two versions of the service, enabling canary releases or A/B testing.
-- Consistent hashing for load balancing, ensuring that requests with the same session or user ID are consistently routed to the same pod—helpful for cache locality and session stickiness.
+  - A 90/10 traffic split between two versions of the service, enabling canary releases or A/B testing.
+  - Consistent hashing for load balancing, ensuring that requests with the same session or user ID are consistently routed to the same pod—helpful for cache locality and session stickiness.
 
 ## Deployment
 
