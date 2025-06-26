@@ -22,6 +22,9 @@ After reading, you should be able to contribute to design discussions.
     - [Deployed Resource Types and Relations](#deployed-resource-types-and-relations)
     - [Key Design Considerations](#key-design-considerations)
     - [Images Overview](#images-overview)
+  - [Under the Hood: Kubernetes \& Istio Deployment](#under-the-hood-kubernetes--istio-deployment)
+    - [Deployments and Services](#deployments-and-services)
+    - [Ingress \& Traffic Management with Istio](#ingress--traffic-management-with-istio)
   - [Deployment](#deployment)
     - [Dockerized](#dockerized)
       - [System Overview](#system-overview)
@@ -173,6 +176,35 @@ The diagram above visually represents the described architecture, showing the fl
   Contains `app-frontend`, `app-service`, and `lib-version`. Handles user interaction, API logic, and versioning.
 - **Model Image:**  
   Contains `model-service`, `model-training`, and `lib-ml`. Handles model training, inference, and shared preprocessing logic. The trained model artifact is produced by `model-training` and consumed by `model-service`.
+
+## Under the Hood: Kubernetes & Istio Deployment
+<!-- ChatGPT was used to convert our draft to this final version (for this section) -->
+<!-- Prompt: please improve (lay-out, grammer etc): X -->
+
+![Pods](pods_graph.jpg)
+
+Our application is orchestrated using Kubernetes, with Istio for ingress and traffic management. This section breaks down how our components are deployed, configured, and connected.
+
+### Deployments and Services
+
+Each application component—app-service, app-frontend, and model-service—is deployed as a dedicated Kubernetes Deployment. These deployments define:
+	•	The number of replicas to ensure scalability and high availability.
+	•	Pod templates specifying the container image, resource limits, and environment variables.
+	•	Integration with Secrets, such as authentication tokens, which are securely mounted into the relevant pods (e.g., app-service).
+
+To expose these deployments internally within the cluster, we use Kubernetes Services. Each service acts as a stable network endpoint and load balances across the associated pods:
+	•	app-service is exposed via a single Service resource. We use labels set on the underlying Deployment to differentiate between model versions or types.
+	•	model-service is exposed via two separate Service resources, facilitating more fine-grained control or testing scenarios.
+	•	app-frontend is exposed to receive and forward user input to app-service.
+
+### Ingress & Traffic Management with Istio
+
+To handle incoming traffic, we rely on Istio as our service mesh. The key components involved are:
+	•	Istio Ingress Gateway: Acts as the unified entry point for all external requests.
+	•	VirtualService: Routes requests from the gateway to internal services such as app-service and app-frontend, based on path and headers.
+	•	DestinationRule: Controls how requests are distributed among the app-service pods. This includes:
+	•	A 90/10 traffic split between two versions of the service, enabling canary releases or A/B testing.
+	•	Consistent hashing for load balancing, ensuring that requests with the same session or user ID are consistently routed to the same pod—helpful for cache locality and session stickiness.
 
 ## Deployment
 
