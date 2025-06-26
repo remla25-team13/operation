@@ -18,15 +18,15 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 8,
+  "id": 30,
   "links": [],
   "panels": [
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cem1yjbsvtbswa"
+        "uid": "prometheus"
       },
-      "description": "Total amount of reviews",
+      "description": "Total amount of correct reviews",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -72,7 +72,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "datasource": {
@@ -81,7 +81,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "total_reviews",
+          "expr": "correct_pred_total",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -91,13 +91,13 @@
           "useBackend": false
         }
       ],
-      "title": "Total reviews",
+      "title": "Correct reviews total",
       "type": "stat"
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cem1yjbsvtbswa"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -142,21 +142,29 @@
         "showThresholdMarkers": true,
         "sizing": "auto"
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
-          "refId": "A"
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "last_req_time_seconds",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
         }
       ],
-      "title": "Model accuracy (% of correct predictions)",
+      "title": "Last requst time",
       "type": "gauge"
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cem1yjbsvtbswa"
+        "uid": "prometheus"
       },
-      "description": ">500\n100-500\n<100",
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -176,7 +184,23 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "{__name__=\"correct_pred_created\", app=\"helm-chart-1750952205-team13-chart-app-service\", instance=\"10.244.1.33:15020\", job=\"kubernetes-pods\", model_type=\"gauss\", namespace=\"default\", node=\"node-1\", pod=\"helm-chart-1750952205-team13-chart-app-service-multi-5bb75hd67x\", pod_template_hash=\"5bb75f5855\", security_istio_io_tlsMode=\"istio\", service_istio_io_canonical_name=\"helm-chart-1750952205-team13-chart-app-service\", service_istio_io_canonical_revision=\"multi\", version=\"multi\"}"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": []
+          }
+        ]
       },
       "gridPos": {
         "h": 7,
@@ -209,12 +233,12 @@
         "sizing": "auto",
         "valueMode": "color"
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "review_length",
+          "expr": "sum(correct_pred_total)",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "legendFormat": "__auto",
@@ -223,13 +247,13 @@
           "useBackend": false
         }
       ],
-      "title": "Amount of reviews with a specific length",
+      "title": "Sum total correct predictions over all models",
       "type": "bargauge"
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cem1yjbsvtbswa"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -274,12 +298,12 @@
         "showThresholdMarkers": true,
         "sizing": "auto"
       },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "cpu",
+          "expr": "process_cpu_seconds_total",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "legendFormat": "__auto",
@@ -294,7 +318,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cem1yjbsvtbswa"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -357,6 +381,7 @@
         "y": 7
       },
       "id": 8,
+      "interval": "5s",
       "options": {
         "legend": {
           "calcs": [],
@@ -370,69 +395,12 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.0",
-      "targets": [
-        {
-          "refId": "A"
-        }
-      ],
-      "title": "Review submission rate",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "cem1yjbsvtbswa"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            }
-          },
-          "mappings": []
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 9,
-        "x": 15,
-        "y": 7
-      },
-      "id": 2,
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "pieType": "pie",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.0.0",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "model_performance",
+          "expr": "accuracy",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "legendFormat": "__auto",
@@ -441,81 +409,30 @@
           "useBackend": false
         }
       ],
-      "title": "Model performance",
-      "type": "piechart"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "cem1yjbsvtbswa"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 0,
-        "y": 8
-      },
-      "id": 6,
-      "options": {
-        "minVizHeight": 75,
-        "minVizWidth": 75,
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "sizing": "auto"
-      },
-      "pluginVersion": "12.0.0",
-      "targets": [
-        {
-          "refId": "A"
-        }
-      ],
-      "title": "Memory Usage",
-      "type": "gauge"
+      "title": "Review submission rate",
+      "type": "timeseries"
     }
   ],
   "preload": false,
-  "refresh": "auto",
+  "refresh": "10s",
   "schemaVersion": 41,
   "tags": [],
   "templating": {
     "list": []
   },
   "time": {
-    "from": "now-6h",
-    "to": "now"
+    "from": "2025-06-26T13:22:13.496Z",
+    "to": "2025-06-26T17:09:53.726Z"
   },
-  "timepicker": {},
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s"
+    ]
+  },
   "timezone": "browser",
-  "title": "Team 13 template",
-  "uid": "e2390942-59b4-4389-a701-b29bc6423795",
+  "title": "Team 13 template Copy",
+  "uid": "03ade9d8-f6f8-4775-987b-0d56197bb9cf",
   "version": 1
 }
