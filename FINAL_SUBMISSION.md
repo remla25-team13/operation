@@ -39,9 +39,9 @@ You can now access:
 - http://grafana.local
 - http://prometheus.local
 - http://app.local
-- http://app.local/API?
+- http://app.local/api/
 
-prom (default credentials):
+grafana (default credentials):
 - admin
 - prom-admin
 
