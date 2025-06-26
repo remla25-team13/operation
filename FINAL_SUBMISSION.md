@@ -2,8 +2,9 @@
 
 - [Final submission REMLA](#final-submission-remla)
   - [All our repositories](#all-our-repositories)
-  - [How to run our code](#how-to-run-our-code)
+  - [How to run our code with kubernetes](#how-to-run-our-code-with-kubernetes)
     - [Grafana](#grafana)
+  - [How to run the code with docker](#how-to-run-the-code-with-docker)
   - [Documentation](#documentation)
 
 ## All our repositories
@@ -11,7 +12,7 @@ Here you can find all our reposities: https://github.com/orgs/remla25-team13/rep
 
  Click [here](https://github.com/remla25-team13/operation/blob/main/docs/deployment.md#repository-content) to read about the content of all the repositories.
 
-## How to run our code
+## How to run our code with kubernetes
 
 ```bash
 vagrant up
@@ -49,6 +50,15 @@ prom (default credentials):
 1. In Grafana, click **+ > Import**.
 2. Upload `grafana/dashboards/k8-dashboard.json` from this repository.
 3. Select your Prometheus data source and click **Import**.
+
+## How to run the code with docker
+Copy the .env.example to .env and fill the DVC credentials. For the submission we will already add the .env.
+
+Now you can do:
+```bash
+docker compose up --build
+docker compose down
+```
 
 ## Documentation
 For documentation please check ```docs/``` folder. Especially the ```docs/deployment.md``` should give you a lot of insight in how our project architecture works.
