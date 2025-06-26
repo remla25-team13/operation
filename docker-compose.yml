@@ -16,6 +16,8 @@ services:
       - GDRIVE_CREDENTIALS_DATA=${GDRIVE_CREDENTIALS}
       - MODEL_SERVICE_URL=http://model-service:${MODEL_SERVICE_PORT}
     container_name: app-service
+    volumes:
+      - ./logs:/app/logs
     secrets:
       - auth_token
 
