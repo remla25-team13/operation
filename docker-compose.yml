@@ -2,7 +2,7 @@ services:
   app-frontend:
     image: ghcr.io/remla25-team13/app-frontend:latest
     ports: 
-      - 4200:4200
+      - 4200:80
     container_name: app-frontend
     restart: on-failure
     depends_on:
@@ -10,9 +10,15 @@ services:
 
   app-service:
     image: ghcr.io/remla25-team13/app-service:latest
+    ports: 
+      - 8080:5000
     environment:
+      - MODEL_TYPE=gauss
+      - GDRIVE_CREDENTIALS_DATA=${GDRIVE_CREDENTIALS}
       - MODEL_SERVICE_URL=http://model-service:${MODEL_SERVICE_PORT}
     container_name: app-service
+    volumes:
+      - ./logs:/app/logs
     restart: on-failure
     secrets:
       - auth_token
