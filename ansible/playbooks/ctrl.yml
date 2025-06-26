@@ -77,7 +77,7 @@
         keyring: /etc/apt/keyrings/helm.gpg
         state: present
 
-    - name: Kubernetes to list
+    - name: Add helm package repository
       ansible.builtin.apt_repository:
         repo: deb [signed-by=/etc/apt/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main
         state: present
