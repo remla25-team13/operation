@@ -1,5 +1,10 @@
 - name: Finalizing the Cluster Setup
   hosts: all
+  vars:
+    monitoring_namespace_name: monitoring
+    metallb_ip_range: "192.168.56.90-192.168.56.99"
+    istio_gateway_ip: "192.168.56.91"
+    nginx_ingress_namespace: ingress-nginx
   environment:
     KUBECONFIG: /home/vagrant/.kube/config
   become: true
@@ -26,7 +31,7 @@
             namespace: metallb-system
           spec:
             addresses:
-              - 192.168.56.90-192.168.56.99
+              - {{ metallb_ip_range }}
 
     - name: Wait for MetalLB controller pod to become ready
       shell: |
@@ -67,7 +72,7 @@
       kubernetes.core.helm:
         name: ingress-nginx
         chart_ref: ingress-nginx/ingress-nginx
-        release_namespace: ingress-nginx
+        release_namespace: "{{ nginx_ingress_namespace }}"
         create_namespace: true
         release_state: present
         values:
@@ -108,7 +113,7 @@
 
     - name: Wait for NGINX ingress controller to become ready
       shell: |
-        kubectl wait --namespace ingress-nginx \
+        kubectl wait --namespace {{ nginx_ingress_namespace }} \
           --all \
           --for=condition=Ready pod \
           --selector=app.kubernetes.io/component=controller \
@@ -129,7 +134,7 @@
           apiVersion: v1
           kind: Namespace
           metadata:
-            name: monitoring
+            name: "{{ monitoring_namespace_name }}"
 
     - name: Read file "grafana.json" and set it as a fact
       ansible.builtin.set_fact:
@@ -144,7 +149,7 @@
           kind: ConfigMap
           metadata:
             name: grafana-dashboard
-            namespace: monitoring
+            namespace: "{{ monitoring_namespace_name }}"
             labels:
               grafana_dashboard: "1"
           data:
@@ -165,7 +170,7 @@
       kubernetes.core.helm:
         name: monitoring
         chart_ref: prometheus-community/kube-prometheus-stack
-        namespace: monitoring
+        namespace: "{{ monitoring_namespace_name }}"
         create_namespace: true
         update_repo_cache: true
         release_state: present
@@ -214,7 +219,7 @@
                 enabled: true
                 k8s:
                   service:
-                    loadBalancerIP: 192.168.56.91
+                    loadBalancerIP: {{ istio_gateway_ip }}
         dest: config.yml
 
     - name: Install Istio
